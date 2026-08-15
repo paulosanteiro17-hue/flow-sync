@@ -24,35 +24,46 @@ Hierarchy: `Workspace → Project → Board → BoardColumn → Task → (Subtas
 
 ## 3. Phase plan
 
+Status is updated at the end of each phase and reflects what has actually been run,
+not what has been written.
+
 | # | Phase | Status | Exit criteria (what "done" means) |
 |---|-------|--------|-----------------------------------|
 | 1 | Planning & Architecture | DONE | `PLAN.md`, `ARCHITECTURE.md`, `DECISIONS.md`, `SECURITY.md` written; stack locked |
 | 2 | Repository setup | DONE | npm workspaces monorepo, TS strict, ESLint/Prettier, shared package, all builds green |
 | 3 | Database | DONE | Prisma schema + migration + seed for `Northstar Labs`; indexes and constraints in place |
-| 4 | Authentication | DONE | Sign up / in / out, httpOnly cookie sessions, refresh rotation, CSRF, rate limits, tests |
-| 5 | Workspace & membership | DONE | Workspace CRUD, RBAC guard, tenant isolation tests |
-| 6 | Projects | DONE | Project CRUD, members, statuses, prefix, archive |
-| 7 | Boards & columns | DONE | Board/column CRUD, reorder, defaults on project creation |
-| 8 | Tasks | DONE | Task CRUD, readable IDs, priority, labels, due dates, assignees, subtasks |
-| 9 | Drag-and-drop | DONE | dnd-kit board, fractional ranking persisted, optimistic move + rollback |
-| 10 | WebSockets | DONE | Socket.IO gateway, cookie handshake auth, room authorization, Redis adapter |
-| 11 | Real-time board | DONE | Live task/column events, sequence numbers, dedup, resync-on-reconnect |
-| 12 | Task details | DONE | Task drawer with all fields, editing, activity |
-| 13 | Comments | DONE | Comments CRUD + @mentions, live updates |
-| 14 | Activity | DONE | Activity events recorded for all mutations, cursor-paginated feed |
-| 15 | Notifications | DONE | Notification center, live delivery, read/read-all, deep links |
-| 16 | Team & RBAC | DONE | Team page, invitations with hashed tokens, role management |
-| 17 | Search & command palette | DONE | Global search endpoint + ⌘K palette |
-| 18 | Attachments | DONE | Storage abstraction, validated uploads, local + S3 drivers |
-| 19 | Responsive UI | DONE | Mobile board, tablet layouts, light/dark/system themes, a11y pass |
-| 20 | Testing | DONE | Backend Jest+Supertest, frontend Vitest+RTL, Playwright E2E incl. two-user realtime |
-| 21 | Security review | DONE | `SECURITY.md` checklist executed, findings fixed |
-| 22 | Performance review | DONE | N+1 audit, query counts, large-board behaviour documented |
-| 23 | Docker | DONE | `docker compose up` boots web+api+postgres+redis |
-| 24 | CI/CD | DONE | GitHub Actions: install, lint, typecheck, unit, build, E2E |
-| 25 | Deployment | DONE | Vendor-neutral deploy guide + production env matrix |
-| 26 | Documentation | DONE | README + architecture/security/decisions docs finalised |
-| 27 | Portfolio | DONE | `PORTFOLIO.md` with Upwork-ready copy and demo script |
+| 4 | Authentication | DONE | Sign up / in / out, httpOnly cookie sessions, refresh rotation, CSRF, rate limits |
+| 5 | Workspace & membership | DONE (API) | Workspace CRUD, RBAC guard chain, invitations, tenant isolation verified |
+| 6 | Projects | DONE (API) | Project CRUD, members, statuses, prefix, archive |
+| 7 | Boards & columns | DONE (API) | Board/column CRUD, reorder, defaults on project creation, board snapshot |
+| 8 | Tasks | DONE (API) | Task CRUD, readable IDs, priority, labels, due dates, assignees, subtasks |
+| 9 | Drag-and-drop | IN PROGRESS | Server-side ranking done and verified under concurrency; dnd-kit board pending |
+| 10 | WebSockets | DONE (API) | Socket.IO gateway, handshake auth middleware, room authorization, Redis adapter |
+| 11 | Real-time board | IN PROGRESS | Server events done; client apply/dedupe/resync pending |
+| 12 | Task details | IN PROGRESS | API complete; task drawer pending |
+| 13 | Comments | DONE (API) | Comments CRUD + server-resolved @mentions, live events |
+| 14 | Activity | DONE (API) | Activity recorded for all mutations, cursor-paginated feed |
+| 15 | Notifications | DONE (API) | Fan-out with preferences, live delivery, read/read-all, deep links |
+| 16 | Team & RBAC | DONE (API) | Roles, hashed invitation tokens, last-owner invariant |
+| 17 | Search & command palette | IN PROGRESS | Search endpoint done; ⌘K palette pending |
+| 18 | Attachments | DONE (API) | Storage abstraction, validated uploads, local + S3 drivers |
+| 19 | Responsive UI | TODO | Mobile board, tablet layouts, light/dark/system themes, a11y pass |
+| 20 | Testing | TODO | Backend Jest+Supertest, frontend Vitest+RTL, Playwright E2E incl. two-user realtime |
+| 21 | Security review | TODO | `SECURITY.md` checklist executed, findings fixed |
+| 22 | Performance review | TODO | N+1 audit, query counts, large-board behaviour documented |
+| 23 | Docker | IN PROGRESS | Postgres and Redis running; api/web images pending |
+| 24 | CI/CD | TODO | GitHub Actions: install, lint, typecheck, unit, build, E2E |
+| 25 | Deployment | TODO | Vendor-neutral deploy guide + production env matrix |
+| 26 | Documentation | TODO | README + architecture/security/decisions docs finalised |
+| 27 | Portfolio | TODO | `PORTFOLIO.md` with Upwork-ready copy and demo script |
+
+### Verified so far
+
+Run against a live API with Postgres and Redis (`scripts/smoke/core.mjs`), 37 checks
+covering: the two-user realtime move, echo suppression, live comments and mention
+notifications, the RBAC matrix per role, tenant isolation across nine endpoints plus
+socket subscriptions, and concurrent drops onto the same slot producing distinct ranks.
+These are exploratory checks; the committed Jest/Vitest/Playwright suites land in phase 20.
 
 ## 4. Risk register
 

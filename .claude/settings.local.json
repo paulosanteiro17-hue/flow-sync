@@ -16,7 +16,8 @@
       "PowerShell(Set-Location \"c:\\\\Users\\\\paulo\\\\OneDrive\\\\Área de Trabalho\\\\Portfolio\\\\Flow Sync\\\\apps\\\\api\"; $env:NODE_ENV='development'; Start-Process -FilePath \"node\" -ArgumentList \"dist/main.js\" -WorkingDirectory \\(Get-Location\\).Path -RedirectStandardOutput \"$env:TEMP\\\\flowsync-api.log\" -RedirectStandardError \"$env:TEMP\\\\flowsync-api.err.log\" -NoNewWindow; Start-Sleep -Seconds 6; try { Invoke-RestMethod http://localhost:4000/health/ready -TimeoutSec 10 | ConvertTo-Json -Compress } catch { \"ERR: $_\" }; Get-Content \"$env:TEMP\\\\flowsync-api.err.log\" -Tail 20)",
       "PowerShell(Get-Content \"$env:TEMP\\\\flowsync-api.log\" -Tail 30; \"---STDERR---\"; Get-Content \"$env:TEMP\\\\flowsync-api.err.log\" -Tail 30)",
       "PowerShell(Get-Process node -ErrorAction SilentlyContinue | Select-Object Id,StartTime | Format-Table -AutoSize; Get-NetTCPConnection -LocalPort 4000 -ErrorAction SilentlyContinue | Select-Object LocalPort,State; Start-Sleep -Seconds 3; Get-Content \"$env:TEMP\\\\flowsync-api.log\" -Tail 40)",
-      "PowerShell(node \"C:\\\\Users\\\\paulo\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-paulo-OneDrive--rea-de-Trabalho-Portfolio-Flow-Sync\\\\34ac857b-a7f6-4a1f-a7e8-f925ac9ef6d7\\\\scratchpad\\\\smoke-auth.mjs\")"
+      "PowerShell(node \"C:\\\\Users\\\\paulo\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-paulo-OneDrive--rea-de-Trabalho-Portfolio-Flow-Sync\\\\34ac857b-a7f6-4a1f-a7e8-f925ac9ef6d7\\\\scratchpad\\\\smoke-auth.mjs\")",
+      "Bash(grep -n \"replace\\(/\\\\[\" attachments.service.ts)"
     ]
   }
 }

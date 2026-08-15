@@ -1,7 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { CONFIG_TOKEN, type AppConfig } from '../config/env';
+import { AccessService } from './access.service';
 import { CookieService } from './cookie.service';
+import { TaskMapper } from './task-mapper.service';
 import { TokenService } from './token.service';
 
 @Global()
@@ -16,7 +18,7 @@ import { TokenService } from './token.service';
       }),
     }),
   ],
-  providers: [TokenService, CookieService],
-  exports: [TokenService, CookieService, JwtModule],
+  providers: [TokenService, CookieService, AccessService, TaskMapper],
+  exports: [TokenService, CookieService, AccessService, TaskMapper, JwtModule],
 })
 export class CommonModule {}

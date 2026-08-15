@@ -15,7 +15,19 @@ import { WorkspaceContextGuard } from './common/guards/workspace-context.guard';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { MailerModule } from './mailer/mailer.module';
+import { RealtimeModule } from './realtime/realtime.module';
+import { ActivityModule } from './activity/activity.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { WorkspacesModule } from './workspaces/workspaces.module';
+import { ProjectsModule } from './projects/projects.module';
+import { BoardsModule } from './boards/boards.module';
+import { TasksModule } from './tasks/tasks.module';
+import { CommentsModule } from './comments/comments.module';
+import { AttachmentsModule } from './attachments/attachments.module';
+import { SearchModule } from './search/search.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { HealthModule } from './health/health.module';
 
 @Module({
@@ -73,8 +85,20 @@ import { HealthModule } from './health/health.module';
     RedisModule,
     CommonModule,
     MailerModule,
+    RealtimeModule,
+    ActivityModule,
+    NotificationsModule,
     HealthModule,
     AuthModule,
+    UsersModule,
+    WorkspacesModule,
+    ProjectsModule,
+    BoardsModule,
+    TasksModule,
+    CommentsModule,
+    AttachmentsModule,
+    SearchModule,
+    DashboardModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
