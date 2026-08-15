@@ -1,0 +1,54 @@
+{
+  "name": "flowsync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FlowSync — Real-Time Collaborative Project Management Platform",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build:shared && npm run build:api && npm run build:web",
+    "build:shared": "npm run build --workspace @flowsync/shared",
+    "build:api": "npm run build --workspace @flowsync/api",
+    "build:web": "npm run build --workspace @flowsync/web",
+    "dev": "node scripts/dev.mjs",
+    "dev:api": "npm run dev --workspace @flowsync/api",
+    "dev:web": "npm run dev --workspace @flowsync/web",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,json,md,css}\"",
+    "typecheck": "npm run typecheck --workspace @flowsync/shared && npm run typecheck --workspace @flowsync/api && npm run typecheck --workspace @flowsync/web",
+    "test": "npm run test --workspace @flowsync/shared && npm run test --workspace @flowsync/web && npm run test --workspace @flowsync/api",
+    "test:shared": "npm run test --workspace @flowsync/shared",
+    "test:web": "npm run test --workspace @flowsync/web",
+    "test:api": "npm run test --workspace @flowsync/api",
+    "test:e2e": "npm run test:e2e --workspace @flowsync/web",
+    "db:generate": "npm run db:generate --workspace @flowsync/api",
+    "db:migrate": "npm run db:migrate --workspace @flowsync/api",
+    "db:deploy": "npm run db:deploy --workspace @flowsync/api",
+    "db:seed": "npm run db:seed --workspace @flowsync/api",
+    "db:reset": "npm run db:reset --workspace @flowsync/api",
+    "db:studio": "npm run db:studio --workspace @flowsync/api",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/node": "^22.10.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.39.0",
+    "eslint-config-prettier": "^10.1.5",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}

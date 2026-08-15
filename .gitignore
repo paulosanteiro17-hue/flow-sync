@@ -1,0 +1,39 @@
+# dependencies
+node_modules/
+.npm
+
+# build output
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+
+# environment
+.env
+.env.*
+!.env.example
+
+# testing
+coverage/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# runtime data
+var/
+uploads/
+*.log
+logs/
+
+# editors & os
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# prisma
+apps/api/prisma/*.db
+apps/api/prisma/*.db-journal
