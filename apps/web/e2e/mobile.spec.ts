@@ -38,6 +38,8 @@ test.describe('mobile', () => {
       .getByRole('navigation', { name: 'Main' })
       .getByRole('link', { name: /Website Redesign/ })
       .click();
+    await page.waitForURL(/\/projects\//, { timeout: 20_000 });
+    await page.getByRole('link', { name: 'Main Board' }).click();
     await page.waitForURL(/\/boards\//, { timeout: 20_000 });
 
     await expect(cardByKey(page, 'WEB-1')).toBeVisible({ timeout: 20_000 });
@@ -63,6 +65,8 @@ test.describe('mobile', () => {
       .getByRole('navigation', { name: 'Main' })
       .getByRole('link', { name: /Mobile App/ })
       .click();
+    await page.waitForURL(/\/projects\//, { timeout: 20_000 });
+    await page.getByRole('link', { name: 'Main Board' }).click();
     await page.waitForURL(/\/boards\//, { timeout: 20_000 });
 
     await page.getByRole('button', { name: /^APP-/ }).first().click();

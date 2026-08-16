@@ -11,13 +11,27 @@ import {
   type WorkspaceMemberView,
   type WorkspaceRole,
 } from '@flowsync/shared';
-import { Download, Loader2, Paperclip, Plus, Send, Trash2, X } from 'lucide-react';
+import { Download, Loader2, MoreHorizontal, Paperclip, Plus, Send, Trash2, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { UserAvatar } from '@/components/ui/avatar';
 import { LabelChip } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogTitle, DrawerContent } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DrawerContent,
+} from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input, Textarea } from '@/components/ui/input';
 import {
   Checkbox,
@@ -44,7 +58,7 @@ import {
   useCommentMutations,
   useComments,
 } from '@/features/comments/use-comments';
-import { useSubtasks, useTask, useUpdateTask } from './use-tasks';
+import { useDeleteTask, useSubtasks, useTask, useUpdateTask } from './use-tasks';
 
 interface TaskDrawerProps {
   workspaceId: string;
@@ -66,8 +80,28 @@ export function TaskDrawer({
   onClose,
 }: TaskDrawerProps) {
   const { data: task, isLoading } = useTask(workspaceId, taskId);
+  const { data: currentUser } = useCurrentUser();
   const updateTask = useUpdateTask(workspaceId, boardId);
+  const deleteTask = useDeleteTask(workspaceId, boardId ?? '');
   const canEdit = can(role, 'task:update');
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  // Members may delete tasks they created; deleting anyone else's needs elevation.
+  // The API enforces exactly this — the check here only decides what to render.
+  const canDelete =
+    task !== undefined &&
+    (can(role, 'task:delete_any') || (canEdit && task.creator.id === currentUser?.id));
+
+  const onDelete = () => {
+    if (!task) return;
+    deleteTask.mutate(task.id, {
+      onSuccess: () => {
+        toast.success(`${task.key} deleted`);
+        setConfirmDelete(false);
+        onClose();
+      },
+    });
+  };
 
   return (
     <Dialog open={Boolean(taskId)} onOpenChange={(open) => !open && onClose()}>
@@ -89,15 +123,27 @@ export function TaskDrawer({
               <span className="truncate text-xs text-muted-foreground">
                 {task.projectName} / {task.columnName}
               </span>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                className="ml-auto"
-                aria-label="Close task"
-                onClick={onClose}
-              >
-                <X />
-              </Button>
+              <div className="ml-auto flex items-center gap-1">
+                {canDelete ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon-sm" aria-label="Task actions">
+                        <MoreHorizontal />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem destructive onSelect={() => setConfirmDelete(true)}>
+                        <Trash2 />
+                        Delete task
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : null}
+
+                <Button variant="ghost" size="icon-sm" aria-label="Close task" onClick={onClose}>
+                  <X />
+                </Button>
+              </div>
             </header>
 
             <div className="flex-1 scrollbar-thin overflow-y-auto">
@@ -152,6 +198,26 @@ export function TaskDrawer({
           </>
         )}
       </DrawerContent>
+
+      <Dialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete {task?.key}?</DialogTitle>
+            <DialogDescription>
+              “{task?.title}” and its comments, subtasks and attachments are removed for everyone.
+              This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setConfirmDelete(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" loading={deleteTask.isPending} onClick={onDelete}>
+              Delete task
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }

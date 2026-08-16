@@ -16,8 +16,12 @@ const API_URL = process.env.API_URL ?? `http://localhost:${API_PORT}`;
  * End-to-end configuration.
  *
  * Both servers are started by Playwright so a single `npm run test:e2e` works on a
- * clean machine and in CI. `reuseExistingServer` keeps the local loop fast when
- * the dev servers are already running.
+ * clean machine and in CI. `reuseExistingServer` keeps the local loop fast when the
+ * dev servers are already running.
+ *
+ * Watch out for one trap it creates: if the Docker stack is up, it already owns
+ * these ports and Playwright will happily test *that* build instead of the one you
+ * just compiled. Run `docker compose stop api web` before testing local changes.
  */
 export default defineConfig({
   testDir: './e2e',

@@ -72,6 +72,8 @@ test.describe('working in a board', () => {
       .getByRole('link', { name: /Q4 Product Launch/ })
       .first()
       .click();
+    await page.waitForURL(/\/projects\//, { timeout: 20_000 });
+    await page.getByRole('link', { name: 'Main Board' }).click();
     await page.waitForURL(/\/boards\//, { timeout: 20_000 });
 
     const title = `E2E task ${Date.now()}`;
@@ -117,6 +119,8 @@ test.describe('working in a board', () => {
       .getByRole('link', { name: /Website Redesign/ })
       .first()
       .click();
+    await page.waitForURL(/\/projects\//, { timeout: 20_000 });
+    await page.getByRole('link', { name: 'Main Board' }).click();
     await page.waitForURL(/\/boards\//, { timeout: 20_000 });
     await expect(cardByKey(page, 'WEB-1')).toBeVisible({ timeout: 20_000 });
 
@@ -183,7 +187,8 @@ test.describe('permissions', () => {
     await page.goto('/app');
     await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
 
-    await expect(page.getByRole('link', { name: /Q4 Product Launch/ })).toBeVisible({
+    // Both the sidebar and the dashboard link to a project, hence `.first()`.
+    await expect(page.getByRole('link', { name: /Q4 Product Launch/ }).first()).toBeVisible({
       timeout: 20_000,
     });
     await expect(page.getByRole('link', { name: /Website Redesign/ })).toHaveCount(0);
@@ -192,6 +197,8 @@ test.describe('permissions', () => {
       .getByRole('link', { name: /Q4 Product Launch/ })
       .first()
       .click();
+    await page.waitForURL(/\/projects\//, { timeout: 20_000 });
+    await page.getByRole('link', { name: 'Main Board' }).click();
     await page.waitForURL(/\/boards\//, { timeout: 20_000 });
 
     // No task-creation affordances are rendered for a guest.
