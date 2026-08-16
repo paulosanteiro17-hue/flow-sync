@@ -1,6 +1,7 @@
 'use client';
 
 import { AtSign, Bell, CalendarClock, CheckCheck, MessageSquare, UserPlus } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { NotificationType, NotificationView } from '@flowsync/shared';
 import { useState } from 'react';
@@ -70,6 +71,16 @@ export function NotificationBell({ workspaceId }: { workspaceId: string }) {
               Mark all read
             </Button>
           ) : null}
+        </div>
+
+        <div className="border-b border-border px-3 py-1.5">
+          <Link
+            href={`/app/${workspaceId}/notifications`}
+            onClick={() => setOpen(false)}
+            className="text-xs font-medium text-primary hover:underline"
+          >
+            Open the notification centre
+          </Link>
         </div>
 
         <div className="max-h-[26rem] scrollbar-thin overflow-y-auto">

@@ -150,12 +150,16 @@ test.describe('working in a board', () => {
     await expect(page.getByRole('heading', { name: 'Comments' })).toBeVisible({ timeout: 20_000 });
   });
 
-  test('the notification center opens and lists notifications', async ({ page }) => {
+  test('the notification bell opens, and links to the full centre', async ({ page }) => {
     await page.goto('/app');
     await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
 
     await page.getByRole('button', { name: /Notifications/ }).click();
     await expect(page.getByRole('heading', { name: 'Notifications' })).toBeVisible();
+
+    await page.getByRole('link', { name: 'Open the notification centre' }).click();
+    await expect(page).toHaveURL(/\/notifications/, { timeout: 20_000 });
+    await expect(page.getByRole('button', { name: 'All', exact: true })).toBeVisible();
   });
 
   test('the activity feed lists what happened', async ({ page }) => {
