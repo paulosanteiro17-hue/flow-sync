@@ -175,15 +175,18 @@ export class TasksService {
 
     const task = await this.withRankRetry(() =>
       this.prisma.$transaction(async (tx) => {
-        const rank = await this.resolveRank(tx, input.columnId, input.beforeTaskId, input.afterTaskId);
-
-        // Minting the readable key inside the transaction keeps it gap-free and
-        // race-free: concurrent creates serialise on the project row.
+        // The counter bump comes first on purpose. It takes a row lock on the
+        // project, so concurrent creates in the same project queue up here; by the
+        // time each one resolves its rank it can see the previous task committed.
+        // Resolving the rank first would have every concurrent create read the
+        // same neighbour and compute the same rank.
         const project = await tx.project.update({
           where: { id: context.projectId },
           data: { taskCounter: { increment: 1 } },
           select: { key: true, taskCounter: true },
         });
+
+        const rank = await this.resolveRank(tx, input.columnId, input.beforeTaskId, input.afterTaskId);
 
         return tx.task.create({
           data: {

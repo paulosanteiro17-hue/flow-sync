@@ -49,8 +49,10 @@ adminUrl.search = '';
 
 const createSql = `SELECT 'CREATE DATABASE "${databaseName}"' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${databaseName}')\\gexec`;
 
+// `shell: true` is required on Windows, where `npx` resolves to `npx.cmd` and
+// cannot be spawned directly.
 function run(command, args, options = {}) {
-  return execFileSync(command, args, { stdio: 'inherit', cwd: apiDir, ...options });
+  return execFileSync(command, args, { stdio: 'inherit', cwd: apiDir, shell: true, ...options });
 }
 
 try {
