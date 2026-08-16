@@ -137,7 +137,10 @@ describe('role-based access control', () => {
 
     it('lets an admin delete anyone’s task', async () => {
       const target = await owner
-        .post(`/workspaces/${workspaceId}/tasks`, { columnId: todoColumnId, title: 'Admin removes' })
+        .post(`/workspaces/${workspaceId}/tasks`, {
+          columnId: todoColumnId,
+          title: 'Admin removes',
+        })
         .expect(201);
 
       await admin.delete(`/workspaces/${workspaceId}/tasks/${target.body.id}`).expect(204);
@@ -169,8 +172,12 @@ describe('role-based access control', () => {
         .post(`/workspaces/${workspaceId}/tasks/${ownerTaskId}/comments`, { body: 'Protected' })
         .expect(201);
 
-      await member.delete(`/workspaces/${workspaceId}/comments/${ownerComment.body.id}`).expect(403);
-      await admin.delete(`/workspaces/${workspaceId}/comments/${memberComment.body.id}`).expect(204);
+      await member
+        .delete(`/workspaces/${workspaceId}/comments/${ownerComment.body.id}`)
+        .expect(403);
+      await admin
+        .delete(`/workspaces/${workspaceId}/comments/${memberComment.body.id}`)
+        .expect(204);
     });
   });
 
@@ -190,10 +197,9 @@ describe('role-based access control', () => {
         select: { id: true },
       });
 
-      const response = await admin.patch(
-        `/workspaces/${workspaceId}/members/${memberUser.id}`,
-        { role: 'OWNER' },
-      );
+      const response = await admin.patch(`/workspaces/${workspaceId}/members/${memberUser.id}`, {
+        role: 'OWNER',
+      });
       expect(response.status).toBe(403);
     });
 
@@ -214,10 +220,9 @@ describe('role-based access control', () => {
         select: { id: true },
       });
 
-      const response = await owner.patch(
-        `/workspaces/${workspaceId}/members/${ownerUser.id}`,
-        { role: 'ADMIN' },
-      );
+      const response = await owner.patch(`/workspaces/${workspaceId}/members/${ownerUser.id}`, {
+        role: 'ADMIN',
+      });
 
       expect(response.status).toBe(409);
       expect(response.body.code).toBe('LAST_OWNER');
@@ -225,10 +230,16 @@ describe('role-based access control', () => {
 
     it('stops members and guests inviting people', async () => {
       await member
-        .post(`/workspaces/${workspaceId}/invitations`, { email: 'x@flowsync.test', role: 'MEMBER' })
+        .post(`/workspaces/${workspaceId}/invitations`, {
+          email: 'x@flowsync.test',
+          role: 'MEMBER',
+        })
         .expect(403);
       await guest
-        .post(`/workspaces/${workspaceId}/invitations`, { email: 'y@flowsync.test', role: 'MEMBER' })
+        .post(`/workspaces/${workspaceId}/invitations`, {
+          email: 'y@flowsync.test',
+          role: 'MEMBER',
+        })
         .expect(403);
     });
   });

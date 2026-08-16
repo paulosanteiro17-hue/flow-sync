@@ -21,8 +21,11 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // The resolved theme is only known on the client; rendering the icon before
-  // hydration would flash the wrong one.
+  // The resolved theme is only known on the client, so the icon must not be
+  // rendered until after hydration or the server and client markup disagree.
+  // This is the one legitimate "set state on mount" case — there is no external
+  // store to subscribe to, only the fact that we are now on the client.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
 
   const active = OPTIONS.find((option) => option.value === theme) ?? OPTIONS[2];

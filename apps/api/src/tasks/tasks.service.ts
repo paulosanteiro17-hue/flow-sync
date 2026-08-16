@@ -22,11 +22,7 @@ import { Prisma } from '@prisma/client';
 import { AccessService } from '../common/access.service';
 import { AppException } from '../common/errors';
 import { PrismaService } from '../prisma/prisma.service';
-import {
-  TASK_DETAIL_SELECT,
-  TASK_SUMMARY_SELECT,
-  TaskMapper,
-} from '../common/task-mapper.service';
+import { TASK_DETAIL_SELECT, TASK_SUMMARY_SELECT, TaskMapper } from '../common/task-mapper.service';
 import { ActivityService } from '../activity/activity.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { RealtimeService } from '../realtime/realtime.service';
@@ -137,9 +133,7 @@ export class TasksService {
     // Priority ordering is an enum sort, which Postgres would do by declaration
     // order; sorting in memory keeps "Urgent first" honest for a bounded page.
     if (query.sort === 'priority') {
-      summaries.sort(
-        (a, b) => TASK_PRIORITY_WEIGHT[b.priority] - TASK_PRIORITY_WEIGHT[a.priority],
-      );
+      summaries.sort((a, b) => TASK_PRIORITY_WEIGHT[b.priority] - TASK_PRIORITY_WEIGHT[a.priority]);
     }
 
     return summaries;
@@ -186,7 +180,12 @@ export class TasksService {
           select: { key: true, taskCounter: true },
         });
 
-        const rank = await this.resolveRank(tx, input.columnId, input.beforeTaskId, input.afterTaskId);
+        const rank = await this.resolveRank(
+          tx,
+          input.columnId,
+          input.beforeTaskId,
+          input.afterTaskId,
+        );
 
         return tx.task.create({
           data: {
@@ -328,7 +327,15 @@ export class TasksService {
 
     const [summary] = await this.mapper.toSummaries([task]);
 
-    await this.recordUpdateActivity(workspaceId, userId, context, previous, input, addedAssignees, removedAssignees);
+    await this.recordUpdateActivity(
+      workspaceId,
+      userId,
+      context,
+      previous,
+      input,
+      addedAssignees,
+      removedAssignees,
+    );
 
     await this.realtime.emitToBoard(
       previous.boardId,
@@ -478,7 +485,14 @@ export class TasksService {
     if (rebalanced) {
       const board = await this.prisma.board.findUniqueOrThrow({
         where: { id: current.boardId },
-        select: { id: true, name: true, projectId: true, isDefault: true, rank: true, createdAt: true },
+        select: {
+          id: true,
+          name: true,
+          projectId: true,
+          isDefault: true,
+          rank: true,
+          createdAt: true,
+        },
       });
       await this.realtime.emitToBoard(current.boardId, 'board.updated', {
         board: { ...board, createdAt: board.createdAt.toISOString() },

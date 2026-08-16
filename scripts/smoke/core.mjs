@@ -35,7 +35,8 @@ class Client {
     const headers = { ...extra };
     if (body !== undefined) headers['Content-Type'] = 'application/json';
     if (this.jar.size) headers.Cookie = this.cookieHeader();
-    if (this.jar.has('fs_csrf') && method !== 'GET') headers['X-CSRF-Token'] = this.jar.get('fs_csrf');
+    if (this.jar.has('fs_csrf') && method !== 'GET')
+      headers['X-CSRF-Token'] = this.jar.get('fs_csrf');
     if (this.socketId) headers['X-Socket-Id'] = this.socketId;
     const res = await fetch(`${BASE}${path}`, {
       method,
@@ -54,7 +55,8 @@ class Client {
   }
   async signIn(email, password = 'DemoFlow2024!') {
     const r = await this.call('POST', '/auth/sign-in', { email, password });
-    if (r.status !== 200) throw new Error(`${this.label} sign-in failed: ${JSON.stringify(r.body)}`);
+    if (r.status !== 200)
+      throw new Error(`${this.label} sign-in failed: ${JSON.stringify(r.body)}`);
     return r.body;
   }
   connect() {
@@ -113,7 +115,11 @@ const ws = workspace.id;
 
 r = await emma.call('GET', `/workspaces/${ws}/projects`);
 const projects = r.body;
-check('four demo projects', projects?.length === 4, projects?.map((p) => p.key));
+check(
+  'four demo projects',
+  projects?.length === 4,
+  projects?.map((p) => p.key),
+);
 
 const web = projects.find((p) => p.key === 'WEB');
 r = await emma.call('GET', `/workspaces/${ws}/projects/${web.id}`);
@@ -173,7 +179,11 @@ check(
   moveEvent?.payload?.fromColumnId === todo.id && moveEvent?.payload?.toColumnId === inProgress.id,
   moveEvent?.payload,
 );
-check('event has a monotonic seq', typeof moveEvent?.seq === 'number' && moveEvent.seq > 0, moveEvent?.seq);
+check(
+  'event has a monotonic seq',
+  typeof moveEvent?.seq === 'number' && moveEvent.seq > 0,
+  moveEvent?.seq,
+);
 check('event has a dedupe id', typeof moveEvent?.id === 'string', moveEvent?.id);
 
 await new Promise((resolve) => setTimeout(resolve, 400));
@@ -217,7 +227,11 @@ r = await noah.call('POST', `/workspaces/${ws}/tasks`, {
   columnId: launchTodo.id,
   title: 'Guest should not be able to create this',
 });
-check('guest cannot create a task on a board they can see', r.status === 403, `${r.status} ${r.body?.code}`);
+check(
+  'guest cannot create a task on a board they can see',
+  r.status === 403,
+  `${r.status} ${r.body?.code}`,
+);
 
 r = await noah.call('POST', `/workspaces/${ws}/tasks/${launchBoard.tasks[0].id}/comments`, {
   body: 'Guests are allowed to comment.',
@@ -240,7 +254,11 @@ check('admin cannot delete the workspace', r.status === 403, r.status);
 // Guests can comment.
 r = await noah.call('GET', `/workspaces/${ws}/projects`);
 const guestProjects = r.body;
-check('guest only sees assigned projects', guestProjects?.length === 1, guestProjects?.map((p) => p.key));
+check(
+  'guest only sees assigned projects',
+  guestProjects?.length === 1,
+  guestProjects?.map((p) => p.key),
+);
 
 // --- Tenant isolation --------------------------------------------------------
 const outsider = new Client('outsider');
@@ -265,7 +283,11 @@ const isolationChecks = [
 let isolated = true;
 const leaks = [];
 for (const [method, path] of isolationChecks) {
-  const res = await outsider.call(method, path, method === 'PATCH' ? { title: 'hacked' } : undefined);
+  const res = await outsider.call(
+    method,
+    path,
+    method === 'PATCH' ? { title: 'hacked' } : undefined,
+  );
   if (res.status !== 404) {
     isolated = false;
     leaks.push(`${method} ${path} -> ${res.status}`);
@@ -288,7 +310,11 @@ for (let i = 0; i < 5; i++) {
   });
   created.push(res.body);
 }
-check('bulk create succeeded', created.every((t) => t?.id), created.map((t) => t?.key));
+check(
+  'bulk create succeeded',
+  created.every((t) => t?.id),
+  created.map((t) => t?.key),
+);
 
 // Everyone drops onto the same slot at the same time.
 const [a, b, c] = created;
@@ -331,10 +357,14 @@ check(
 );
 
 r = await emma.call('GET', `/workspaces/${ws}/dashboard`);
-check('dashboard returns assigned work and activity', Array.isArray(r.body?.recentActivity) && r.body.recentActivity.length > 0, {
-  assigned: r.body?.assignedToMe?.length,
-  activity: r.body?.recentActivity?.length,
-});
+check(
+  'dashboard returns assigned work and activity',
+  Array.isArray(r.body?.recentActivity) && r.body.recentActivity.length > 0,
+  {
+    assigned: r.body?.assignedToMe?.length,
+    activity: r.body?.recentActivity?.length,
+  },
+);
 
 emma.socket?.close();
 daniel.socket?.close();

@@ -95,7 +95,10 @@ export default function SignUpPage() {
         </Field>
 
         {formError ? (
-          <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          <p
+            role="alert"
+            className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
             {formError}
           </p>
         ) : null}
@@ -107,7 +110,10 @@ export default function SignUpPage() {
 
       <p className="text-center text-sm text-muted-foreground">
         Already have an account?{' '}
-        <Link href="/sign-in" className="font-medium text-primary underline-offset-4 hover:underline">
+        <Link
+          href="/sign-in"
+          className="font-medium text-primary underline-offset-4 hover:underline"
+        >
           Sign in
         </Link>
       </p>

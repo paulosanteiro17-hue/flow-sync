@@ -226,7 +226,13 @@ export interface SearchResults {
   projects: ProjectSummary[];
   tasks: TaskSummary[];
   members: Array<UserSummary & { email: string; role: WorkspaceRole }>;
-  comments: Array<{ id: string; taskId: string; taskKey: string; excerpt: string; author: UserSummary }>;
+  comments: Array<{
+    id: string;
+    taskId: string;
+    taskKey: string;
+    excerpt: string;
+    author: UserSummary;
+  }>;
 }
 
 export interface CursorPage<T> {

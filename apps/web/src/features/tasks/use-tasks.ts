@@ -72,8 +72,9 @@ export function useUpdateTask(workspaceId: string, boardId: string | null) {
       api.patch<TaskSummary>(`/workspaces/${workspaceId}/tasks/${taskId}`, input),
     onSuccess: (task) => {
       if (boardId) {
-        queryClient.setQueryData<BoardSnapshot>(queryKeys.board(workspaceId, boardId), (snapshot) =>
-          snapshot ? upsertTask(snapshot, task) : snapshot,
+        queryClient.setQueryData<BoardSnapshot>(
+          queryKeys.board(workspaceId, boardId),
+          (snapshot) => (snapshot ? upsertTask(snapshot, task) : snapshot),
         );
       }
       void queryClient.invalidateQueries({ queryKey: queryKeys.task(workspaceId, task.id) });
@@ -125,7 +126,10 @@ export function useMoveTask(workspaceId: string, boardId: string) {
       const previous = queryClient.getQueryData<BoardSnapshot>(boardKey);
 
       if (previous) {
-        queryClient.setQueryData<BoardSnapshot>(boardKey, applyOptimisticMove(previous, taskId, target));
+        queryClient.setQueryData<BoardSnapshot>(
+          boardKey,
+          applyOptimisticMove(previous, taskId, target),
+        );
       }
 
       return { previous };
@@ -152,7 +156,8 @@ export function useSubtasks(workspaceId: string, taskId: string, boardId: string
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: queryKeys.task(workspaceId, taskId) });
-    if (boardId) void queryClient.invalidateQueries({ queryKey: queryKeys.board(workspaceId, boardId) });
+    if (boardId)
+      void queryClient.invalidateQueries({ queryKey: queryKeys.board(workspaceId, boardId) });
   };
 
   const create = useMutation({

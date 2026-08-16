@@ -43,10 +43,16 @@ const envSchema = z
     S3_SECRET_ACCESS_KEY: z.string().optional(),
     S3_FORCE_PATH_STYLE: booleanish.default(false),
 
-    UPLOAD_MAX_BYTES: z.coerce.number().int().min(1024).default(10 * 1024 * 1024),
+    UPLOAD_MAX_BYTES: z.coerce
+      .number()
+      .int()
+      .min(1024)
+      .default(10 * 1024 * 1024),
 
     RATE_LIMIT_ENABLED: booleanish.default(true),
-    LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
+    LOG_LEVEL: z
+      .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
+      .default('info'),
 
     /** Enables the "Explore demo workspace" one-click entry point. */
     DEMO_ENABLED: booleanish.default(true),
@@ -54,32 +60,45 @@ const envSchema = z
     DEMO_PASSWORD: z.string().default('DemoFlow2024!'),
   })
   .superRefine((env, ctx) => {
-    if (env.NODE_ENV === 'production') {
-      if (env.JWT_SECRET.length < 32) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['JWT_SECRET'],
-          message: 'JWT_SECRET must be at least 32 characters in production',
-        });
-      }
-      if (!env.COOKIE_SECURE) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['COOKIE_SECURE'],
-          message: 'COOKIE_SECURE must be enabled in production',
-        });
-      }
-      if (env.COOKIE_SAMESITE === 'none' && !env.COOKIE_SECURE) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['COOKIE_SAMESITE'],
-          message: 'SameSite=None requires Secure cookies',
-        });
-      }
+    if (env.NODE_ENV === 'production' && env.JWT_SECRET.length < 32) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['JWT_SECRET'],
+        message: 'JWT_SECRET must be at least 32 characters in production',
+      });
+    }
+
+    // Secure cookies are required whenever the browser actually talks to us over
+    // TLS. Keying this off the origin rather than off NODE_ENV means a production
+    // build served over plain HTTP on localhost (`docker compose up`) still works,
+    // while a real HTTPS deployment cannot accidentally ship insecure cookies.
+    const servesHttps = env.WEB_ORIGIN.split(',').some((origin) =>
+      origin.trim().startsWith('https://'),
+    );
+
+    if (servesHttps && !env.COOKIE_SECURE) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['COOKIE_SECURE'],
+        message: 'COOKIE_SECURE must be enabled when the web app is served over HTTPS',
+      });
+    }
+
+    if (env.COOKIE_SAMESITE === 'none' && !env.COOKIE_SECURE) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['COOKIE_SAMESITE'],
+        message: 'SameSite=None requires Secure cookies',
+      });
     }
 
     if (env.STORAGE_DRIVER === 's3') {
-      for (const key of ['S3_BUCKET', 'S3_REGION', 'S3_ACCESS_KEY_ID', 'S3_SECRET_ACCESS_KEY'] as const) {
+      for (const key of [
+        'S3_BUCKET',
+        'S3_REGION',
+        'S3_ACCESS_KEY_ID',
+        'S3_SECRET_ACCESS_KEY',
+      ] as const) {
         if (!env[key]) {
           ctx.addIssue({
             code: 'custom',

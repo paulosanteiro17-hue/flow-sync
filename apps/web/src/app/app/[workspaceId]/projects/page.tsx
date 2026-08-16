@@ -4,7 +4,7 @@ import { PROJECT_STATUS_LABELS, PROJECT_STATUSES, can, type ProjectStatus } from
 import { FolderKanban, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Topbar } from '@/components/layout/topbar';
 import { UserAvatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -16,7 +16,10 @@ import { useProjects } from '@/features/projects/use-projects';
 import { useWorkspace } from '@/features/workspaces/use-workspaces';
 import { cn, relativeTime } from '@/lib/utils';
 
-const STATUS_TONE: Record<ProjectStatus, 'default' | 'secondary' | 'success' | 'warning' | 'outline'> = {
+const STATUS_TONE: Record<
+  ProjectStatus,
+  'default' | 'secondary' | 'success' | 'warning' | 'outline'
+> = {
   PLANNING: 'secondary',
   ACTIVE: 'default',
   ON_HOLD: 'warning',
@@ -31,16 +34,19 @@ function ProjectsPageInner() {
 
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<ProjectStatus | 'ALL'>('ALL');
+  // `?new=1` is only meaningful on arrival (onboarding links here), so it seeds
+  // the initial state rather than being synchronised on every render.
   const [createOpen, setCreateOpen] = useState(searchParams.get('new') === '1');
 
-  const { data: projects, isLoading, isError, refetch } = useProjects(workspaceId, {
+  const {
+    data: projects,
+    isLoading,
+    isError,
+    refetch,
+  } = useProjects(workspaceId, {
     ...(status === 'ALL' ? {} : { status }),
     includeArchived: status === 'ARCHIVED',
   });
-
-  useEffect(() => {
-    if (searchParams.get('new') === '1') setCreateOpen(true);
-  }, [searchParams]);
 
   const visible = (projects ?? []).filter((project) =>
     search.trim()
@@ -54,7 +60,7 @@ function ProjectsPageInner() {
         <h1 className="truncate text-sm font-semibold">Projects</h1>
       </Topbar>
 
-      <main className="flex-1 overflow-y-auto scrollbar-thin p-4 sm:p-6">
+      <main className="flex-1 scrollbar-thin overflow-y-auto p-4 sm:p-6">
         <div className="mx-auto max-w-6xl space-y-5">
           <div className="flex flex-wrap items-center gap-2">
             <Input
@@ -191,7 +197,11 @@ function ProjectsPageInner() {
         </div>
       </main>
 
-      <CreateProjectDialog workspaceId={workspaceId} open={createOpen} onOpenChange={setCreateOpen} />
+      <CreateProjectDialog
+        workspaceId={workspaceId}
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+      />
     </>
   );
 }

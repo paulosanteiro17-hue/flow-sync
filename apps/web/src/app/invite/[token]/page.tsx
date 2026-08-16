@@ -1,7 +1,12 @@
 'use client';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { ROLE_DESCRIPTIONS, ROLE_LABELS, type WorkspaceRole, type WorkspaceSummary } from '@flowsync/shared';
+import {
+  ROLE_DESCRIPTIONS,
+  ROLE_LABELS,
+  type WorkspaceRole,
+  type WorkspaceSummary,
+} from '@flowsync/shared';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -43,7 +48,9 @@ export default function InvitePage() {
       router.push(`/app/${workspace.id}`);
     },
     onError: (caught) =>
-      toast.error(caught instanceof ApiError ? caught.message : 'The invitation could not be accepted.'),
+      toast.error(
+        caught instanceof ApiError ? caught.message : 'The invitation could not be accepted.',
+      ),
   });
 
   const emailMatches = user?.email.toLowerCase() === invitation?.email.toLowerCase();

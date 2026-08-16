@@ -42,10 +42,13 @@ export default function ActivityPage() {
         <h1 className="truncate text-sm font-semibold">Activity</h1>
       </Topbar>
 
-      <main className="flex-1 overflow-y-auto scrollbar-thin p-4 sm:p-6">
+      <main className="flex-1 scrollbar-thin overflow-y-auto p-4 sm:p-6">
         <div className="mx-auto max-w-3xl space-y-6">
           {isError ? (
-            <ErrorState message="The activity feed could not be loaded." onRetry={() => void refetch()} />
+            <ErrorState
+              message="The activity feed could not be loaded."
+              onRetry={() => void refetch()}
+            />
           ) : isLoading ? (
             <div className="space-y-2">
               {[0, 1, 2, 3, 4, 5].map((index) => (
@@ -62,7 +65,7 @@ export default function ActivityPage() {
             <>
               {Object.entries(groups).map(([day, dayEvents]) => (
                 <section key={day}>
-                  <h2 className="sticky top-0 z-10 -mx-1 bg-background/90 px-1 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground backdrop-blur">
+                  <h2 className="sticky top-0 z-10 -mx-1 bg-background/90 px-1 py-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase backdrop-blur">
                     {day}
                   </h2>
                   <ul className="space-y-1">

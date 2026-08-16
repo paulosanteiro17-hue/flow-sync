@@ -77,7 +77,8 @@ export function useUpdateMemberRole(workspaceId: string) {
 export function useRemoveMember(workspaceId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (userId: string) => api.delete<void>(`/workspaces/${workspaceId}/members/${userId}`),
+    mutationFn: (userId: string) =>
+      api.delete<void>(`/workspaces/${workspaceId}/members/${userId}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.members(workspaceId) }),
   });
 }
@@ -95,7 +96,8 @@ export function useInviteMember(workspaceId: string) {
   return useMutation({
     mutationFn: (input: CreateInvitationInput) =>
       api.post<InvitationView>(`/workspaces/${workspaceId}/invitations`, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.invitations(workspaceId) }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: queryKeys.invitations(workspaceId) }),
   });
 }
 
@@ -104,7 +106,8 @@ export function useRevokeInvitation(workspaceId: string) {
   return useMutation({
     mutationFn: (invitationId: string) =>
       api.delete<void>(`/workspaces/${workspaceId}/invitations/${invitationId}`),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.invitations(workspaceId) }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: queryKeys.invitations(workspaceId) }),
   });
 }
 

@@ -89,7 +89,10 @@ function SignInForm() {
         </Field>
 
         {formError ? (
-          <p role="alert" className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          <p
+            role="alert"
+            className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
             {formError}
           </p>
         ) : null}
@@ -117,7 +120,10 @@ function SignInForm() {
 
       <p className="text-center text-sm text-muted-foreground">
         New to FlowSync?{' '}
-        <Link href="/sign-up" className="font-medium text-primary underline-offset-4 hover:underline">
+        <Link
+          href="/sign-up"
+          className="font-medium text-primary underline-offset-4 hover:underline"
+        >
           Create an account
         </Link>
       </p>

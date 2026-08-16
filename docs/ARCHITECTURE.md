@@ -142,12 +142,12 @@ The socket handshake reuses the httpOnly access-token cookie. There is no token 
 
 ### 6.3 Rooms and subscription authorization
 
-| Room | Membership rule |
-|------|-----------------|
-| `user:{userId}` | joined automatically for the authenticated socket only |
-| `workspace:{workspaceId}` | requires an active `WorkspaceMember` row |
-| `project:{projectId}` | requires workspace membership **and** project visibility |
-| `board:{boardId}` | requires access to the board's project |
+| Room                      | Membership rule                                          |
+| ------------------------- | -------------------------------------------------------- |
+| `user:{userId}`           | joined automatically for the authenticated socket only   |
+| `workspace:{workspaceId}` | requires an active `WorkspaceMember` row                 |
+| `project:{projectId}`     | requires workspace membership **and** project visibility |
+| `board:{boardId}`         | requires access to the board's project                   |
 
 The client asks to subscribe (`subscribe:board`), the server re-checks authorization in
 the database, and only then calls `socket.join()`. Client-supplied ids are never trusted
@@ -157,12 +157,12 @@ as proof of access.
 
 ```ts
 type RealtimeEnvelope<T> = {
-  id: string;        // uuid — used for client-side de-duplication
+  id: string; // uuid — used for client-side de-duplication
   type: RealtimeEventType;
-  room: string;      // e.g. "board:ckx..."
-  seq: number;       // monotonic per room
-  ts: string;        // ISO timestamp
-  actorId: string;   // who caused it
+  room: string; // e.g. "board:ckx..."
+  seq: number; // monotonic per room
+  ts: string; // ISO timestamp
+  actorId: string; // who caused it
   payload: T;
 };
 ```
@@ -187,7 +187,7 @@ stateDiagram-v2
 - **Ordering**: per-room `seq`. The client applies an event only when it is the next
   expected sequence; anything ahead triggers a resync instead of an out-of-order apply.
 - **Duplicates**: an LRU of the last 500 event ids per room; a repeated `id` is dropped.
-  This also absorbs the "my own mutation returned over REST *and* arrived over the
+  This also absorbs the "my own mutation returned over REST _and_ arrived over the
   socket" case, together with the origin-socket suppression below.
 - **Echo suppression**: the mutating socket sends its `socketId` in the
   `X-Socket-Id` header; the server broadcasts with `.except(socketId)` so the actor
@@ -201,7 +201,7 @@ Server-authoritative **last-write-wins with field-level granularity**:
 
 - Task updates patch only the fields present in the request, so two people editing
   different fields of the same task do not overwrite each other.
-- Moves are *not* last-write-wins on the client's proposed rank. The client sends
+- Moves are _not_ last-write-wins on the client's proposed rank. The client sends
   `{ columnId, beforeTaskId, afterTaskId }` and the **server** computes the final rank
   inside a transaction. Two concurrent drops onto the same slot therefore produce two
   distinct, well-ordered ranks rather than a collision.
@@ -237,7 +237,7 @@ freshly computed midpoint.
   is realtime-driven and long-lived — RSC streaming buys nothing for a board that
   mutates over a socket.
 - **TanStack Query is the single client cache.** Realtime events are applied with
-  `queryClient.setQueryData` (surgical cache writes), *not* `invalidateQueries`, so a
+  `queryClient.setQueryData` (surgical cache writes), _not_ `invalidateQueries`, so a
   20-event burst causes zero refetches.
 - **Zustand** holds only ephemeral, non-server UI state: command palette open/closed,
   board filter state, socket connection status. No server data lives there.

@@ -239,21 +239,15 @@ describe('authentication', () => {
 
       // The token itself is only visible through the mailer, which the console
       // transport records for exactly this purpose.
-      const outbox = harness.app.get(
-        (await import('../src/mailer/mailer.service')).MailerService,
-      );
+      const outbox = harness.app.get((await import('../src/mailer/mailer.service')).MailerService);
       const message = outbox.outbox().at(-1);
       const token = /token=([\w-]+)/.exec(message?.text ?? '')?.[1];
       expect(token).toBeDefined();
 
-      await client
-        .post('/auth/reset-password', { token, password: 'AnotherSecret88' })
-        .expect(204);
+      await client.post('/auth/reset-password', { token, password: 'AnotherSecret88' }).expect(204);
 
       // Single use.
-      await client
-        .post('/auth/reset-password', { token, password: 'YetAnother99' })
-        .expect(400);
+      await client.post('/auth/reset-password', { token, password: 'YetAnother99' }).expect(400);
 
       const fresh = new TestClient(harness.server);
       await fresh

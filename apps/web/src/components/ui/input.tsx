@@ -22,20 +22,21 @@ export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
   },
 );
 
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>(
-  function Textarea({ className, ...props }, ref) {
-    return (
-      <textarea
-        ref={ref}
-        className={cn(
-          'flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm transition-colors',
-          'placeholder:text-muted-foreground',
-          'focus-visible:border-ring disabled:cursor-not-allowed disabled:opacity-50',
-          'aria-[invalid=true]:border-destructive',
-          className,
-        )}
-        {...props}
-      />
-    );
-  },
-);
+export const Textarea = forwardRef<
+  HTMLTextAreaElement,
+  TextareaHTMLAttributes<HTMLTextAreaElement>
+>(function Textarea({ className, ...props }, ref) {
+  return (
+    <textarea
+      ref={ref}
+      className={cn(
+        'flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm transition-colors',
+        'placeholder:text-muted-foreground',
+        'focus-visible:border-ring disabled:cursor-not-allowed disabled:opacity-50',
+        'aria-[invalid=true]:border-destructive',
+        className,
+      )}
+      {...props}
+    />
+  );
+});

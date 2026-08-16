@@ -85,7 +85,10 @@ export function BoardPreview({ animate = true }: { animate?: boolean }) {
 
   useEffect(() => {
     if (!animate) return;
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
       return;
     }
 
@@ -111,7 +114,9 @@ export function BoardPreview({ animate = true }: { animate?: boolean }) {
           <span className="size-2.5 rounded-full bg-amber-400/70" />
           <span className="size-2.5 rounded-full bg-emerald-400/70" />
         </div>
-        <p className="ml-2 text-xs font-medium text-muted-foreground">Website Redesign · Main Board</p>
+        <p className="ml-2 text-xs font-medium text-muted-foreground">
+          Website Redesign · Main Board
+        </p>
         <div className="ml-auto flex items-center gap-1.5">
           <span className="relative flex size-1.5">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -127,7 +132,7 @@ export function BoardPreview({ animate = true }: { animate?: boolean }) {
           return (
             <div key={column} className="flex flex-col gap-2">
               <div className="flex items-center gap-1.5 px-0.5">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                <span className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
                   {column}
                 </span>
                 <span className="text-[11px] text-muted-foreground/60">{columnCards.length}</span>
@@ -140,7 +145,7 @@ export function BoardPreview({ animate = true }: { animate?: boolean }) {
                     className={cn(
                       'group relative rounded-lg border border-border bg-card p-2.5 shadow-sm transition-all duration-500',
                       movingId === card.id &&
-                        'ring-2 ring-primary/60 shadow-lg shadow-primary/10 -translate-y-0.5',
+                        '-translate-y-0.5 shadow-lg ring-2 shadow-primary/10 ring-primary/60',
                     )}
                   >
                     <div className="mb-1.5 flex items-center gap-1.5">
@@ -153,7 +158,7 @@ export function BoardPreview({ animate = true }: { animate?: boolean }) {
                       </span>
                     </div>
 
-                    <p className="text-[12px] font-medium leading-snug text-card-foreground">
+                    <p className="text-[12px] leading-snug font-medium text-card-foreground">
                       {card.title}
                     </p>
 
@@ -180,7 +185,7 @@ export function BoardPreview({ animate = true }: { animate?: boolean }) {
                     </div>
 
                     {movingId === card.id ? (
-                      <span className="absolute -right-1 -top-1 flex items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-semibold text-primary-foreground shadow-md">
+                      <span className="absolute -top-1 -right-1 flex items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-semibold text-primary-foreground shadow-md">
                         Daniel
                       </span>
                     ) : null}

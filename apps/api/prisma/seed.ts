@@ -24,12 +24,42 @@ interface SeedUser {
 }
 
 const USERS: SeedUser[] = [
-  { name: 'Emma Carter', email: 'emma.carter@northstarlabs.io', role: 'OWNER', timezone: 'Europe/London' },
-  { name: 'Daniel Kim', email: 'daniel.kim@northstarlabs.io', role: 'ADMIN', timezone: 'America/Los_Angeles' },
-  { name: 'Sophia Martinez', email: 'sophia.martinez@northstarlabs.io', role: 'MEMBER', timezone: 'Europe/Madrid' },
-  { name: 'Liam Anderson', email: 'liam.anderson@northstarlabs.io', role: 'MEMBER', timezone: 'America/New_York' },
-  { name: 'Olivia Chen', email: 'olivia.chen@northstarlabs.io', role: 'MEMBER', timezone: 'Asia/Singapore' },
-  { name: 'Noah Bennett', email: 'noah.bennett@contractor.dev', role: 'GUEST', timezone: 'Europe/Berlin' },
+  {
+    name: 'Emma Carter',
+    email: 'emma.carter@northstarlabs.io',
+    role: 'OWNER',
+    timezone: 'Europe/London',
+  },
+  {
+    name: 'Daniel Kim',
+    email: 'daniel.kim@northstarlabs.io',
+    role: 'ADMIN',
+    timezone: 'America/Los_Angeles',
+  },
+  {
+    name: 'Sophia Martinez',
+    email: 'sophia.martinez@northstarlabs.io',
+    role: 'MEMBER',
+    timezone: 'Europe/Madrid',
+  },
+  {
+    name: 'Liam Anderson',
+    email: 'liam.anderson@northstarlabs.io',
+    role: 'MEMBER',
+    timezone: 'America/New_York',
+  },
+  {
+    name: 'Olivia Chen',
+    email: 'olivia.chen@northstarlabs.io',
+    role: 'MEMBER',
+    timezone: 'Asia/Singapore',
+  },
+  {
+    name: 'Noah Bennett',
+    email: 'noah.bennett@contractor.dev',
+    role: 'GUEST',
+    timezone: 'Europe/Berlin',
+  },
 ];
 
 interface SeedTask {
@@ -157,7 +187,8 @@ const PROJECTS: SeedProject[] = [
       },
       {
         title: 'Fix layout shift on the testimonials carousel',
-        description: 'CLS spikes to 0.24 when the carousel hydrates because the slide height is not reserved.',
+        description:
+          'CLS spikes to 0.24 when the carousel hydrates because the slide height is not reserved.',
         column: 'To Do',
         priority: 'URGENT',
         assignees: ['Olivia Chen'],
@@ -175,7 +206,8 @@ const PROJECTS: SeedProject[] = [
       },
       {
         title: 'Retire the legacy CSS bundle',
-        description: 'Roughly 180KB of unused styles still ship on every page. Remove once the last legacy page is migrated.',
+        description:
+          'Roughly 180KB of unused styles still ship on every page. Remove once the last legacy page is migrated.',
         column: 'Backlog',
         priority: 'MEDIUM',
         assignees: ['Liam Anderson'],
@@ -233,7 +265,8 @@ const PROJECTS: SeedProject[] = [
       },
       {
         title: 'Create onboarding screens',
-        description: 'Four-step carousel introducing boards, real-time updates, mentions and notifications.',
+        description:
+          'Four-step carousel introducing boards, real-time updates, mentions and notifications.',
         column: 'In Progress',
         priority: 'HIGH',
         assignees: ['Olivia Chen'],
@@ -306,7 +339,8 @@ const PROJECTS: SeedProject[] = [
     tasks: [
       {
         title: 'Build billing page',
-        description: 'Plan selection, seat count and invoice history. Payment provider integration is a separate task.',
+        description:
+          'Plan selection, seat count and invoice history. Payment provider integration is a separate task.',
         column: 'To Do',
         priority: 'HIGH',
         assignees: ['Sophia Martinez'],
@@ -333,7 +367,8 @@ const PROJECTS: SeedProject[] = [
       },
       {
         title: 'Write the support runbook',
-        description: 'What support should do for the ten most likely launch-day questions, with escalation paths.',
+        description:
+          'What support should do for the ten most likely launch-day questions, with escalation paths.',
         column: 'Backlog',
         priority: 'MEDIUM',
         assignees: ['Noah Bennett'],
@@ -364,7 +399,8 @@ const PROJECTS: SeedProject[] = [
   {
     name: 'Internal Platform',
     key: 'PLAT',
-    description: 'Developer platform work: CI, observability, database health and the shared component library.',
+    description:
+      'Developer platform work: CI, observability, database health and the shared component library.',
     status: 'ACTIVE',
     color: '#10b981',
     icon: 'Server',
@@ -414,7 +450,8 @@ const PROJECTS: SeedProject[] = [
       },
       {
         title: 'Configure CI pipeline',
-        description: 'Lint, typecheck, unit tests, build and end-to-end on every pull request. Must fail loudly.',
+        description:
+          'Lint, typecheck, unit tests, build and end-to-end on every pull request. Must fail loudly.',
         column: 'In Progress',
         priority: 'HIGH',
         assignees: ['Liam Anderson', 'Daniel Kim'],
@@ -598,7 +635,9 @@ async function main(): Promise<void> {
         id: true,
         key: true,
         name: true,
-        boards: { select: { id: true, columns: { select: { id: true, name: true, isDone: true } } } },
+        boards: {
+          select: { id: true, columns: { select: { id: true, name: true, isDone: true } } },
+        },
       },
     });
 
@@ -691,7 +730,11 @@ async function main(): Promise<void> {
         });
       }
 
-      if (seedTask.column === 'In Progress' || seedTask.column === 'Review' || seedTask.column === 'Done') {
+      if (
+        seedTask.column === 'In Progress' ||
+        seedTask.column === 'Review' ||
+        seedTask.column === 'Done'
+      ) {
         pushActivity('TASK_MOVED', seedTask.assignees[0] ?? seedProject.lead, {
           projectId: project.id,
           taskId: task.id,
@@ -704,7 +747,9 @@ async function main(): Promise<void> {
       for (const comment of seedTask.comments ?? []) {
         // Mentions are stored as `@[Name](userId)`, so the placeholder is resolved here.
         const body = comment.body.replace(/OLIVIA_ID/g, userId('Olivia Chen'));
-        const mentionIds = [...body.matchAll(/@\[[^\]]+\]\(([^)]+)\)/g)].map((match) => match[1] as string);
+        const mentionIds = [...body.matchAll(/@\[[^\]]+\]\(([^)]+)\)/g)].map(
+          (match) => match[1] as string,
+        );
 
         const created = await prisma.comment.create({
           data: {

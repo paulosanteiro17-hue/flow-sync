@@ -300,7 +300,8 @@ export class WorkspacesService {
     targetUserId: string,
   ): Promise<WorkspaceMemberView[]> {
     const actor = await this.access.requireWorkspace(actorId, workspaceId);
-    if (actor.role !== 'OWNER') throw AppException.forbidden('Only an owner can transfer ownership');
+    if (actor.role !== 'OWNER')
+      throw AppException.forbidden('Only an owner can transfer ownership');
     if (actorId === targetUserId) return this.listMembers(actorId, workspaceId);
 
     const target = await this.prisma.workspaceMember.findUnique({
@@ -311,14 +312,21 @@ export class WorkspacesService {
 
     await this.prisma.$transaction([
       this.prisma.workspaceMember.update({ where: { id: target.id }, data: { role: 'OWNER' } }),
-      this.prisma.workspaceMember.update({ where: { id: actor.memberId }, data: { role: 'ADMIN' } }),
+      this.prisma.workspaceMember.update({
+        where: { id: actor.memberId },
+        data: { role: 'ADMIN' },
+      }),
     ]);
 
     await this.activity.record({
       workspaceId,
       actorId,
       type: 'MEMBER_ROLE_CHANGED',
-      metadata: { memberName: target.user.name, from: ROLE_LABELS[target.role], to: ROLE_LABELS.OWNER },
+      metadata: {
+        memberName: target.user.name,
+        from: ROLE_LABELS[target.role],
+        to: ROLE_LABELS.OWNER,
+      },
     });
 
     return this.listMembers(actorId, workspaceId);
@@ -442,7 +450,11 @@ export class WorkspacesService {
     };
   }
 
-  async revokeInvitation(actorId: string, workspaceId: string, invitationId: string): Promise<void> {
+  async revokeInvitation(
+    actorId: string,
+    workspaceId: string,
+    invitationId: string,
+  ): Promise<void> {
     await this.access.requireWorkspace(actorId, workspaceId);
     const result = await this.prisma.invitation.deleteMany({
       where: { id: invitationId, workspaceId },

@@ -8,7 +8,11 @@ import type { BoardFilters } from '@/stores/ui-store';
  * realtime events exactly like an unfiltered one. Filters combine with AND across
  * dimensions and OR within a dimension, which is what people expect.
  */
-export function filterTasks(tasks: TaskSummary[], filters: BoardFilters, now = new Date()): TaskSummary[] {
+export function filterTasks(
+  tasks: TaskSummary[],
+  filters: BoardFilters,
+  now = new Date(),
+): TaskSummary[] {
   const search = filters.search.trim().toLowerCase();
 
   return tasks.filter((task) => {

@@ -87,7 +87,8 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     headers,
     credentials: 'include',
     ...(options.signal ? { signal: options.signal } : {}),
-    body: options.formData ?? (options.body !== undefined ? JSON.stringify(options.body) : undefined),
+    body:
+      options.formData ?? (options.body !== undefined ? JSON.stringify(options.body) : undefined),
   });
 
   if (response.status === 204) return undefined as T;
@@ -110,7 +111,8 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 }
 
 export const api = {
-  get: <T>(path: string, signal?: AbortSignal) => request<T>(path, { method: 'GET', ...(signal ? { signal } : {}) }),
+  get: <T>(path: string, signal?: AbortSignal) =>
+    request<T>(path, { method: 'GET', ...(signal ? { signal } : {}) }),
   post: <T>(path: string, body?: unknown) => request<T>(path, { method: 'POST', body }),
   patch: <T>(path: string, body?: unknown) => request<T>(path, { method: 'PATCH', body }),
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
@@ -118,7 +120,9 @@ export const api = {
 };
 
 /** Serialises a query object, dropping empty values so URLs stay clean and cache keys stable. */
-export function toQuery(params: Record<string, string | number | boolean | undefined | null>): string {
+export function toQuery(
+  params: Record<string, string | number | boolean | undefined | null>,
+): string {
   const search = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     if (value === undefined || value === null || value === '') continue;

@@ -52,7 +52,9 @@ describe('TaskCard', () => {
   it('exposes an accessible name that includes the priority', () => {
     renderCard();
     expect(
-      screen.getByRole('button', { name: /WEB-101: Rebuild the pricing page layout\. Priority High\./ }),
+      screen.getByRole('button', {
+        name: /WEB-101: Rebuild the pricing page layout\. Priority High\./,
+      }),
     ).toBeInTheDocument();
   });
 

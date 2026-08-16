@@ -85,7 +85,9 @@ export default function OnboardingPage() {
                 >
                   {index === 0 ? <Check className="size-3" /> : index + 1}
                 </span>
-                <span className={index === 0 ? 'font-medium' : 'text-muted-foreground'}>{step}</span>
+                <span className={index === 0 ? 'font-medium' : 'text-muted-foreground'}>
+                  {step}
+                </span>
               </li>
             ))}
           </ol>

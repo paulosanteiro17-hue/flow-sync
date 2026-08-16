@@ -177,7 +177,11 @@ export class CommentsService {
     const context = await this.access.requireTask(userId, existing.taskId);
 
     if (existing.authorId !== userId) {
-      this.access.assert(context.role, 'comment:delete_any', 'You can only delete your own comments');
+      this.access.assert(
+        context.role,
+        'comment:delete_any',
+        'You can only delete your own comments',
+      );
     }
 
     await this.prisma.comment.delete({ where: { id: commentId } });
@@ -253,7 +257,10 @@ export class CommentsService {
    * This goes to everyone including the author — their own count changed too.
    */
   private async emitTaskCounts(boardId: string, taskId: string, actorId: string): Promise<void> {
-    const exists = await this.prisma.task.findUnique({ where: { id: taskId }, select: { id: true } });
+    const exists = await this.prisma.task.findUnique({
+      where: { id: taskId },
+      select: { id: true },
+    });
     if (!exists) return;
     const task = await this.mapper.summaryById(taskId);
     await this.realtime.emitToBoard(boardId, 'task.updated', { task }, { actorId });

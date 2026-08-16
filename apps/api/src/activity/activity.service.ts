@@ -25,7 +25,10 @@ export interface RecordActivityInput {
 }
 
 type ActivityRow = Prisma.ActivityEventGetPayload<{
-  include: { actor: { select: { id: true; name: true; avatarUrl: true } }; task: { select: { key: true } } };
+  include: {
+    actor: { select: { id: true; name: true; avatarUrl: true } };
+    task: { select: { key: true } };
+  };
 }>;
 
 @Injectable()

@@ -103,7 +103,14 @@ export class ProjectsService {
           orderBy: { addedAt: 'asc' },
         },
         boards: {
-          select: { id: true, name: true, projectId: true, isDefault: true, rank: true, createdAt: true },
+          select: {
+            id: true,
+            name: true,
+            projectId: true,
+            isDefault: true,
+            rank: true,
+            createdAt: true,
+          },
           orderBy: { rank: 'asc' },
         },
       },
@@ -153,7 +160,9 @@ export class ProjectsService {
     ]);
 
     // Creator and lead are always members so the project is never orphaned.
-    const memberIds = [...new Set([userId, ...input.memberIds, ...(input.leadId ? [input.leadId] : [])])];
+    const memberIds = [
+      ...new Set([userId, ...input.memberIds, ...(input.leadId ? [input.leadId] : [])]),
+    ];
     const columnRanks = generateRanks(DEFAULT_COLUMNS.length);
 
     const project = await this.prisma.$transaction(async (tx) => {
@@ -216,7 +225,9 @@ export class ProjectsService {
         select: { id: true },
       });
       if (duplicate) {
-        throw AppException.conflict(`The project key ${input.key} is already used in this workspace`);
+        throw AppException.conflict(
+          `The project key ${input.key} is already used in this workspace`,
+        );
       }
     }
 
@@ -352,7 +363,10 @@ export class ProjectsService {
 
     const completed = await this.prisma.task.groupBy({
       by: ['projectId'],
-      where: { projectId: { in: projects.map((project) => project.id) }, completedAt: { not: null } },
+      where: {
+        projectId: { in: projects.map((project) => project.id) },
+        completedAt: { not: null },
+      },
       _count: { _all: true },
     });
     const completedByProject = new Map(
@@ -384,7 +398,9 @@ export class ProjectsService {
       where: { workspaceId, userId: { in: unique } },
     });
     if (found !== unique.length) {
-      throw AppException.validation('One or more selected people are not members of this workspace');
+      throw AppException.validation(
+        'One or more selected people are not members of this workspace',
+      );
     }
   }
 }

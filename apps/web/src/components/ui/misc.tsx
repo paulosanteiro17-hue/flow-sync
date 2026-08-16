@@ -8,7 +8,12 @@ import * as SwitchPrimitive from '@radix-ui/react-switch';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { Check } from 'lucide-react';
-import { forwardRef, type ComponentPropsWithoutRef, type HTMLAttributes, type ReactNode } from 'react';
+import {
+  forwardRef,
+  type ComponentPropsWithoutRef,
+  type HTMLAttributes,
+  type ReactNode,
+} from 'react';
 import { cn } from '@/lib/utils';
 
 // --- Checkbox ---------------------------------------------------------------
@@ -103,7 +108,10 @@ export function Progress({
 
 export const Tabs = TabsPrimitive.Root;
 
-export function TabsList({ className, ...props }: ComponentPropsWithoutRef<typeof TabsPrimitive.List>) {
+export function TabsList({
+  className,
+  ...props
+}: ComponentPropsWithoutRef<typeof TabsPrimitive.List>) {
   return (
     <TabsPrimitive.List
       className={cn('inline-flex items-center gap-1 border-b border-border', className)}
@@ -173,7 +181,7 @@ export function Tooltip({ children, content }: { children: ReactNode; content: R
       <TooltipPrimitive.Portal>
         <TooltipPrimitive.Content
           sideOffset={6}
-          className="z-50 rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background shadow-md animate-in fade-in-0 zoom-in-95"
+          className="z-50 animate-in rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background shadow-md fade-in-0 zoom-in-95"
         >
           {content}
         </TooltipPrimitive.Content>
@@ -225,7 +233,12 @@ interface ErrorStateProps {
   className?: string;
 }
 
-export function ErrorState({ title = 'Something went wrong', message, onRetry, className }: ErrorStateProps) {
+export function ErrorState({
+  title = 'Something went wrong',
+  message,
+  onRetry,
+  className,
+}: ErrorStateProps) {
   return (
     <div
       role="alert"

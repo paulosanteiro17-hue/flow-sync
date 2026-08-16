@@ -36,7 +36,13 @@ import {
 import { Field } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { EmptyState, ErrorState, Skeleton } from '@/components/ui/misc';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { ApiError } from '@/lib/api-client';
 import { formatDate, pluralize, relativeTime } from '@/lib/utils';
 import { useCurrentUser } from '@/features/auth/use-auth';
@@ -74,13 +80,14 @@ export default function TeamPage() {
         <h1 className="truncate text-sm font-semibold">Team</h1>
       </Topbar>
 
-      <main className="flex-1 overflow-y-auto scrollbar-thin p-4 sm:p-6">
+      <main className="flex-1 scrollbar-thin overflow-y-auto p-4 sm:p-6">
         <div className="mx-auto max-w-4xl space-y-6">
           <div className="flex flex-wrap items-center gap-3">
             <div>
               <h2 className="text-xl font-semibold tracking-tight">People</h2>
               <p className="text-sm text-muted-foreground">
-                {members ? pluralize(members.length, 'member') : '—'} in {workspace?.name ?? 'this workspace'}
+                {members ? pluralize(members.length, 'member') : '—'} in{' '}
+                {workspace?.name ?? 'this workspace'}
               </p>
             </div>
             {canInvite ? (
@@ -118,7 +125,9 @@ export default function TeamPage() {
                             <span className="text-xs font-normal text-muted-foreground">(you)</span>
                           ) : null}
                         </p>
-                        <p className="truncate text-xs text-muted-foreground">{member.user.email}</p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {member.user.email}
+                        </p>
                         <p className="mt-0.5 text-[11px] text-muted-foreground">
                           Joined {formatDate(member.joinedAt)} ·{' '}
                           {pluralize(member.projectCount, 'project')}
@@ -132,10 +141,15 @@ export default function TeamPage() {
                             updateRole.mutate(
                               { userId: member.user.id, role: role as WorkspaceRole },
                               {
-                                onSuccess: () => toast.success(`${member.user.name} is now ${ROLE_LABELS[role as WorkspaceRole]}`),
+                                onSuccess: () =>
+                                  toast.success(
+                                    `${member.user.name} is now ${ROLE_LABELS[role as WorkspaceRole]}`,
+                                  ),
                                 onError: (error) =>
                                   toast.error(
-                                    error instanceof ApiError ? error.message : 'Role change failed',
+                                    error instanceof ApiError
+                                      ? error.message
+                                      : 'Role change failed',
                                   ),
                               },
                             )

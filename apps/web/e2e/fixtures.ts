@@ -45,7 +45,9 @@ export async function openAs(
 export async function openProjectBoard(page: Page, projectName: string): Promise<string> {
   await page.getByRole('link', { name: projectName, exact: false }).first().click();
   await page.waitForURL(/\/boards\//, { timeout: 20_000 });
-  await expect(page.getByRole('button', { name: /^WEB-|^APP-|^PLAT-|^LAUNCH-/ }).first()).toBeVisible({
+  await expect(
+    page.getByRole('button', { name: /^WEB-|^APP-|^PLAT-|^LAUNCH-/ }).first(),
+  ).toBeVisible({
     timeout: 20_000,
   });
   return page.url();

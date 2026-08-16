@@ -43,8 +43,8 @@ const Overlay = forwardRef<
       ref={ref}
       className={cn(
         'fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px]',
-        'data-[state=open]:animate-in data-[state=closed]:animate-out',
-        'data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0',
+        'data-[state=closed]:animate-out data-[state=open]:animate-in',
+        'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
         className,
       )}
       {...props}
@@ -62,12 +62,12 @@ export const DialogContent = forwardRef<
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          'fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2',
+          'fixed top-1/2 left-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2',
           'rounded-xl border border-border bg-popover p-6 shadow-xl',
-          'data-[state=open]:animate-in data-[state=closed]:animate-out',
-          'data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0',
-          'data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95',
-          'max-h-[90vh] overflow-y-auto scrollbar-thin',
+          'data-[state=closed]:animate-out data-[state=open]:animate-in',
+          'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+          'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+          'max-h-[90vh] scrollbar-thin overflow-y-auto',
           className,
         )}
         {...props}
@@ -75,7 +75,7 @@ export const DialogContent = forwardRef<
         {children}
         {hideClose ? null : (
           <DialogPrimitive.Close
-            className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="absolute top-4 right-4 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             aria-label="Close"
           >
             <X className="size-4" />
@@ -115,8 +115,8 @@ export const DrawerContent = forwardRef<
         className={cn(
           'fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-border bg-background shadow-2xl',
           'sm:max-w-2xl',
-          'data-[state=open]:animate-in data-[state=closed]:animate-out',
-          'data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right',
+          'data-[state=closed]:animate-out data-[state=open]:animate-in',
+          'data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
           'duration-200',
           className,
         )}

@@ -16,7 +16,11 @@ import {
 } from '@/features/boards/board-dialogs';
 import { filterTasks } from '@/features/boards/filter-tasks';
 import { useBoard } from '@/features/projects/use-projects';
-import { usePresence, useRealtime, useRoomSubscription } from '@/features/realtime/realtime-provider';
+import {
+  usePresence,
+  useRealtime,
+  useRoomSubscription,
+} from '@/features/realtime/realtime-provider';
 import { TaskDrawer } from '@/features/tasks/task-drawer';
 import { useLabels, useMembers, useWorkspace } from '@/features/workspaces/use-workspaces';
 import { useUiStore } from '@/stores/ui-store';

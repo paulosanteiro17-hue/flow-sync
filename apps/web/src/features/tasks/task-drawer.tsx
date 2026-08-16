@@ -11,16 +11,8 @@ import {
   type WorkspaceMemberView,
   type WorkspaceRole,
 } from '@flowsync/shared';
-import {
-  Download,
-  Loader2,
-  Paperclip,
-  Plus,
-  Send,
-  Trash2,
-  X,
-} from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Download, Loader2, Paperclip, Plus, Send, Trash2, X } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { UserAvatar } from '@/components/ui/avatar';
 import { LabelChip } from '@/components/ui/badge';
@@ -37,7 +29,13 @@ import {
   Separator,
   Skeleton,
 } from '@/components/ui/misc';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn, formatDate, relativeTime } from '@/lib/utils';
 import { useCurrentUser } from '@/features/auth/use-auth';
 import {
@@ -84,7 +82,9 @@ export function TaskDrawer({
         ) : (
           <>
             <header className="flex items-center gap-3 border-b border-border px-4 py-3 sm:px-6">
-              <span className="font-mono text-xs font-medium text-muted-foreground">{task.key}</span>
+              <span className="font-mono text-xs font-medium text-muted-foreground">
+                {task.key}
+              </span>
               <span className="text-xs text-muted-foreground">·</span>
               <span className="truncate text-xs text-muted-foreground">
                 {task.projectName} / {task.columnName}
@@ -100,7 +100,7 @@ export function TaskDrawer({
               </Button>
             </header>
 
-            <div className="flex-1 overflow-y-auto scrollbar-thin">
+            <div className="flex-1 scrollbar-thin overflow-y-auto">
               <div className="space-y-6 px-4 py-5 sm:px-6">
                 <TitleField
                   value={task.title}
@@ -168,7 +168,16 @@ function TitleField({
   onSave: (title: string) => void;
 }) {
   const [draft, setDraft] = useState(value);
-  useEffect(() => setDraft(value), [value]);
+  const [syncedValue, setSyncedValue] = useState(value);
+
+  // Adjusting state during render rather than in an effect: React re-runs this
+  // component immediately without committing the stale draft to the DOM, so a
+  // value that changed underneath us (someone else edited the task) does not
+  // cause a visible flash of the old text.
+  if (value !== syncedValue) {
+    setSyncedValue(value);
+    setDraft(value);
+  }
 
   const commit = () => {
     const trimmed = draft.trim();
@@ -193,7 +202,7 @@ function TitleField({
       }}
       aria-label="Task title"
       rows={1}
-      className="min-h-0 resize-none border-0 px-0 text-xl font-semibold leading-snug shadow-none focus-visible:border-0 disabled:opacity-100"
+      className="min-h-0 resize-none border-0 px-0 text-xl leading-snug font-semibold shadow-none focus-visible:border-0 disabled:opacity-100"
     />
   );
 }
@@ -205,7 +214,14 @@ function MetaGrid({
   disabled,
   onChange,
 }: {
-  task: { priority: TaskPriority; dueDate: string | null; assignees: Array<{ id: string; name: string; avatarUrl: string | null }>; labels: LabelView[]; creator: { id: string; name: string; avatarUrl: string | null }; createdAt: string };
+  task: {
+    priority: TaskPriority;
+    dueDate: string | null;
+    assignees: Array<{ id: string; name: string; avatarUrl: string | null }>;
+    labels: LabelView[];
+    creator: { id: string; name: string; avatarUrl: string | null };
+    createdAt: string;
+  };
   members: WorkspaceMemberView[];
   labels: LabelView[];
   disabled: boolean;
@@ -260,7 +276,7 @@ function MetaGrid({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-60 p-1.5">
-            <div className="max-h-56 space-y-0.5 overflow-y-auto scrollbar-thin">
+            <div className="max-h-56 scrollbar-thin space-y-0.5 overflow-y-auto">
               {members.map((member) => (
                 <label
                   key={member.user.id}
@@ -316,7 +332,7 @@ function MetaGrid({
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-1.5">
-              <div className="max-h-56 space-y-0.5 overflow-y-auto scrollbar-thin">
+              <div className="max-h-56 scrollbar-thin space-y-0.5 overflow-y-auto">
                 {labels.map((label) => (
                   <label
                     key={label.id}
@@ -366,13 +382,18 @@ function DescriptionField({
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value ?? '');
+  const [syncedValue, setSyncedValue] = useState(value);
 
-  useEffect(() => setDraft(value ?? ''), [value]);
+  if (value !== syncedValue) {
+    setSyncedValue(value);
+    // Never clobber what the user is typing if the update arrived mid-edit.
+    if (!editing) setDraft(value ?? '');
+  }
 
   if (!editing) {
     return (
       <section>
-        <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <h3 className="mb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           Description
         </h3>
         <button
@@ -398,7 +419,7 @@ function DescriptionField({
 
   return (
     <section>
-      <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <h3 className="mb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
         Description
       </h3>
       <Textarea
@@ -455,7 +476,7 @@ function SubtaskList({
   return (
     <section>
       <div className="mb-2 flex items-center gap-2">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           Subtasks
         </h3>
         {subtasks.length > 0 ? (
@@ -469,7 +490,10 @@ function SubtaskList({
 
       <ul className="space-y-0.5">
         {subtasks.map((subtask) => (
-          <li key={subtask.id} className="group flex items-center gap-2 rounded px-1 py-1 hover:bg-accent/40">
+          <li
+            key={subtask.id}
+            className="group flex items-center gap-2 rounded px-1 py-1 hover:bg-accent/40"
+          >
             <Checkbox
               checked={subtask.completed}
               disabled={disabled}
@@ -543,7 +567,7 @@ function AttachmentList({
   return (
     <section>
       <div className="mb-2 flex items-center gap-2">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           Attachments
         </h3>
         {canUpload ? (
@@ -603,7 +627,7 @@ function AttachmentList({
                 <button
                   type="button"
                   onClick={() => remove.mutate(attachment.id)}
-                  className="rounded p-1 text-muted-foreground opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+                  className="rounded p-1 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
                   aria-label={`Delete ${attachment.filename}`}
                 >
                   <Trash2 className="size-3.5" />
@@ -642,7 +666,7 @@ function CommentThread({
 
   return (
     <section>
-      <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <h3 className="mb-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
         Comments
       </h3>
 
@@ -717,7 +741,7 @@ function CommentThread({
                     </Button>
                   ) : null}
                 </div>
-                <p className="mt-0.5 whitespace-pre-wrap text-sm leading-relaxed">
+                <p className="mt-0.5 text-sm leading-relaxed whitespace-pre-wrap">
                   {tokenizeMentions(comment.body).map((token, index) =>
                     token.type === 'mention' ? (
                       <span

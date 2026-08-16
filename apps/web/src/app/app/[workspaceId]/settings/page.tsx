@@ -2,7 +2,7 @@
 
 import { can } from '@flowsync/shared';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
 import { Topbar } from '@/components/layout/topbar';
 import { UserAvatar } from '@/components/ui/avatar';
@@ -38,22 +38,27 @@ function SettingsInner() {
   const updateWorkspace = useUpdateWorkspace(workspaceId);
   const deleteWorkspace = useDeleteWorkspace();
 
-  const [name, setName] = useState('');
-  const [timezone, setTimezone] = useState('');
-  const [workspaceName, setWorkspaceName] = useState('');
+  const [name, setName] = useState(user?.name ?? '');
+  const [timezone, setTimezone] = useState(user?.timezone ?? '');
+  const [workspaceName, setWorkspaceName] = useState(workspace?.name ?? '');
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteText, setDeleteText] = useState('');
 
-  useEffect(() => {
-    if (user) {
-      setName(user.name);
-      setTimezone(user.timezone);
-    }
-  }, [user]);
+  // The forms are seeded from data that may still be loading on first render.
+  // Adjusting during render (rather than in an effect) fills them in as soon as
+  // the query resolves, without an extra committed render showing empty fields.
+  const [syncedUserId, setSyncedUserId] = useState(user?.id);
+  if (user && user.id !== syncedUserId) {
+    setSyncedUserId(user.id);
+    setName(user.name);
+    setTimezone(user.timezone);
+  }
 
-  useEffect(() => {
-    if (workspace) setWorkspaceName(workspace.name);
-  }, [workspace]);
+  const [syncedWorkspaceId, setSyncedWorkspaceId] = useState(workspace?.id);
+  if (workspace && workspace.id !== syncedWorkspaceId) {
+    setSyncedWorkspaceId(workspace.id);
+    setWorkspaceName(workspace.name);
+  }
 
   const tab = searchParams.get('tab') === 'workspace' ? 'workspace' : 'profile';
 
@@ -72,12 +77,14 @@ function SettingsInner() {
         <h1 className="truncate text-sm font-semibold">Settings</h1>
       </Topbar>
 
-      <main className="flex-1 overflow-y-auto scrollbar-thin p-4 sm:p-6">
+      <main className="flex-1 scrollbar-thin overflow-y-auto p-4 sm:p-6">
         <div className="mx-auto max-w-3xl">
           <Tabs
             value={tab}
             onValueChange={(value) =>
-              router.replace(`/app/${workspaceId}/settings${value === 'workspace' ? '?tab=workspace' : ''}`)
+              router.replace(
+                `/app/${workspaceId}/settings${value === 'workspace' ? '?tab=workspace' : ''}`,
+              )
             }
           >
             <TabsList>
@@ -133,7 +140,11 @@ function SettingsInner() {
                     </Field>
                   </div>
 
-                  <Field label="Email" htmlFor="profile-email" hint="Your email cannot be changed here.">
+                  <Field
+                    label="Email"
+                    htmlFor="profile-email"
+                    hint="Your email cannot be changed here."
+                  >
                     <Input id="profile-email" value={user.email} disabled />
                   </Field>
 
@@ -181,9 +192,7 @@ function SettingsInner() {
                       {
                         onSuccess: () => toast.success('Workspace updated'),
                         onError: (error) =>
-                          toast.error(
-                            error instanceof ApiError ? error.message : 'Update failed',
-                          ),
+                          toast.error(error instanceof ApiError ? error.message : 'Update failed'),
                       },
                     );
                   }}

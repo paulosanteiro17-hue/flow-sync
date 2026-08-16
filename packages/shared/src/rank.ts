@@ -63,7 +63,9 @@ function assertRankInput(value: string, label: string): void {
   // Validate up front rather than lazily: the walk below stops at the first
   // differing character, so a bad character further right would slip through.
   if (value !== '' && !isValidRank(value)) {
-    throw new RankError(`${label} rank "${value}" contains a character outside the base-62 alphabet`);
+    throw new RankError(
+      `${label} rank "${value}" contains a character outside the base-62 alphabet`,
+    );
   }
 }
 
@@ -144,7 +146,9 @@ export function needsRebalance(rank: string): boolean {
 }
 
 /** Produces evenly spread ranks for an already ordered list of ids. */
-export function rebalance<T extends { id: string }>(items: T[]): Array<{ id: string; rank: string }> {
+export function rebalance<T extends { id: string }>(
+  items: T[],
+): Array<{ id: string; rank: string }> {
   const ranks = generateRanks(items.length);
   return items.map((item, index) => ({ id: item.id, rank: ranks[index] as string }));
 }

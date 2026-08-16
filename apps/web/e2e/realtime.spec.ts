@@ -13,7 +13,10 @@ test.describe('real-time collaboration', () => {
     const userB = await openAs(browser, STATE.daniel);
 
     try {
-      await userA.page.getByRole('link', { name: /Website Redesign/ }).first().click();
+      await userA.page
+        .getByRole('link', { name: /Website Redesign/ })
+        .first()
+        .click();
       await userA.page.waitForURL(/\/boards\//);
       const boardUrl = userA.page.url();
 
@@ -54,7 +57,10 @@ test.describe('real-time collaboration', () => {
     const userB = await openAs(browser, STATE.daniel);
 
     try {
-      await userA.page.getByRole('link', { name: /Internal Platform/ }).first().click();
+      await userA.page
+        .getByRole('link', { name: /Internal Platform/ })
+        .first()
+        .click();
       await userA.page.waitForURL(/\/boards\//);
       await userB.page.goto(userA.page.url());
       await expect(userB.page.getByRole('region', { name: /^Backlog column/ })).toBeVisible({
@@ -81,7 +87,10 @@ test.describe('real-time collaboration', () => {
     const userB = await openAs(browser, STATE.daniel);
 
     try {
-      await userA.page.getByRole('link', { name: /Mobile App/ }).first().click();
+      await userA.page
+        .getByRole('link', { name: /Mobile App/ })
+        .first()
+        .click();
       await userA.page.waitForURL(/\/boards\//);
 
       const card = cardByKey(userA.page, 'APP-1');
@@ -111,7 +120,10 @@ test.describe('real-time collaboration', () => {
     const userB = await openAs(browser, STATE.daniel);
 
     try {
-      await userA.page.getByRole('link', { name: /Internal Platform/ }).first().click();
+      await userA.page
+        .getByRole('link', { name: /Internal Platform/ })
+        .first()
+        .click();
       await userA.page.waitForURL(/\/boards\//);
       await userB.page.goto(userA.page.url());
 

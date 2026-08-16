@@ -6,7 +6,9 @@ test.describe('landing page', () => {
     await page.goto('/');
     await expect(page.getByRole('heading', { name: 'Move work forward, together.' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Start free' })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Explore the demo workspace/ }).first()).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /Explore the demo workspace/ }).first(),
+    ).toBeVisible();
   });
 
   test('redirects an unauthenticated visitor away from the app', async ({ page }) => {
@@ -35,7 +37,9 @@ test.describe('onboarding a brand new account', () => {
 
     // Onboarding lands on the projects page with the "new project" dialog already
     // open, so dismiss it before touching anything behind it.
-    await expect(page.getByRole('heading', { name: 'New project' })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole('heading', { name: 'New project' })).toBeVisible({
+      timeout: 15_000,
+    });
     await page.keyboard.press('Escape');
     await expect(page.getByRole('heading', { name: 'New project' })).toBeHidden();
 
@@ -64,7 +68,10 @@ test.describe('working in a board', () => {
     await page.goto('/app');
     await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
 
-    await page.getByRole('link', { name: /Q4 Product Launch/ }).first().click();
+    await page
+      .getByRole('link', { name: /Q4 Product Launch/ })
+      .first()
+      .click();
     await page.waitForURL(/\/boards\//, { timeout: 20_000 });
 
     const title = `E2E task ${Date.now()}`;
@@ -106,7 +113,10 @@ test.describe('working in a board', () => {
     await page.goto('/app');
     await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
 
-    await page.getByRole('link', { name: /Website Redesign/ }).first().click();
+    await page
+      .getByRole('link', { name: /Website Redesign/ })
+      .first()
+      .click();
     await page.waitForURL(/\/boards\//, { timeout: 20_000 });
     await expect(cardByKey(page, 'WEB-1')).toBeVisible({ timeout: 20_000 });
 
@@ -163,7 +173,9 @@ test.describe('working in a board', () => {
 test.describe('permissions', () => {
   test.use({ storageState: STATE.guest });
 
-  test('a guest sees only their project, cannot create tasks, but can comment', async ({ page }) => {
+  test('a guest sees only their project, cannot create tasks, but can comment', async ({
+    page,
+  }) => {
     await page.goto('/app');
     await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
 
@@ -172,7 +184,10 @@ test.describe('permissions', () => {
     });
     await expect(page.getByRole('link', { name: /Website Redesign/ })).toHaveCount(0);
 
-    await page.getByRole('link', { name: /Q4 Product Launch/ }).first().click();
+    await page
+      .getByRole('link', { name: /Q4 Product Launch/ })
+      .first()
+      .click();
     await page.waitForURL(/\/boards\//, { timeout: 20_000 });
 
     // No task-creation affordances are rendered for a guest.
@@ -180,7 +195,10 @@ test.describe('permissions', () => {
     await expect(page.getByRole('button', { name: 'Add column' })).toHaveCount(0);
 
     // Commenting is allowed.
-    await page.getByRole('button', { name: /^LAUNCH-/ }).first().click();
+    await page
+      .getByRole('button', { name: /^LAUNCH-/ })
+      .first()
+      .click();
     await expect(page.getByLabel('Write a comment')).toBeVisible({ timeout: 15_000 });
   });
 });

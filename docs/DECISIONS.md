@@ -100,7 +100,7 @@ fetch wrapper.
 binary-safe payloads and `@socket.io/redis-adapter` for horizontal scaling — all of which
 we would otherwise write and debug ourselves. SSE was rejected because presence and
 client→server subscription messages want a duplex channel. A hosted service was rejected
-because operating the realtime layer *is* the thing this project demonstrates.
+because operating the realtime layer _is_ the thing this project demonstrates.
 
 ---
 
@@ -125,7 +125,7 @@ must own a rebalance routine (implemented, tested, and triggered by rank length)
 
 **Decision.** Redis earns its place with four real jobs: Socket.IO horizontal scaling
 (`@socket.io/redis-adapter`), presence sets with TTL, per-room realtime sequence
-counters, and rate-limit counters. It is *not* used as a general cache — Postgres is fast
+counters, and rate-limit counters. It is _not_ used as a general cache — Postgres is fast
 enough for this workload and a cache layer would add invalidation bugs for no measured
 gain. `RedisService` has an in-memory implementation selected by `REDIS_ENABLED=false`
 so unit tests and a bare `npm run dev` do not require a broker.
@@ -160,11 +160,11 @@ storm — the single most common mistake in "realtime" portfolio projects.
 
 ### D-011 · Conflict resolution: server-authoritative LWW with field-level patches
 
-**Decision.** No CRDT. `PATCH` bodies carry only changed fields; moves send *relative*
+**Decision.** No CRDT. `PATCH` bodies carry only changed fields; moves send _relative_
 position (`beforeTaskId`/`afterTaskId`) and the server computes the rank transactionally.
 
 **Consequences.** Concurrent edits to different fields of the same task both survive.
-Concurrent edits to the *same* field resolve to the last writer, which is the correct and
+Concurrent edits to the _same_ field resolve to the last writer, which is the correct and
 expected behaviour for short structured fields. Concurrent drops onto the same slot
 produce two distinct ranks instead of a collision. Documented as a deliberate limit:
 simultaneous long-form description editing is last-write-wins and would need OT/CRDT to

@@ -23,12 +23,7 @@ import {
 import { toast } from 'sonner';
 import { queryKeys } from '@/lib/query-keys';
 import { realtimeClient, type ConnectionStatus } from '@/lib/realtime-client';
-import {
-  removeColumn,
-  removeTask,
-  upsertColumn,
-  upsertTask,
-} from '@/features/boards/board-cache';
+import { removeColumn, removeTask, upsertColumn, upsertTask } from '@/features/boards/board-cache';
 
 interface RealtimeContextValue {
   status: ConnectionStatus;
@@ -73,7 +68,9 @@ export function RealtimeProvider({
         case 'task.created':
         case 'task.updated': {
           const { task } = envelope.payload;
-          patchBoard(queryClient, workspaceId, task.boardId, (snapshot) => upsertTask(snapshot, task));
+          patchBoard(queryClient, workspaceId, task.boardId, (snapshot) =>
+            upsertTask(snapshot, task),
+          );
           void queryClient.invalidateQueries({
             queryKey: queryKeys.task(workspaceId, task.id),
             refetchType: 'active',
@@ -83,7 +80,9 @@ export function RealtimeProvider({
 
         case 'task.moved': {
           const { task } = envelope.payload;
-          patchBoard(queryClient, workspaceId, task.boardId, (snapshot) => upsertTask(snapshot, task));
+          patchBoard(queryClient, workspaceId, task.boardId, (snapshot) =>
+            upsertTask(snapshot, task),
+          );
           break;
         }
 
@@ -114,7 +113,9 @@ export function RealtimeProvider({
         case 'board.updated': {
           const { board, requiresResync } = envelope.payload;
           if (requiresResync) {
-            void queryClient.invalidateQueries({ queryKey: queryKeys.board(workspaceId, board.id) });
+            void queryClient.invalidateQueries({
+              queryKey: queryKeys.board(workspaceId, board.id),
+            });
           } else {
             patchBoard(queryClient, workspaceId, board.id, (snapshot) => ({ ...snapshot, board }));
           }
@@ -133,7 +134,9 @@ export function RealtimeProvider({
         case 'comment.updated':
         case 'comment.deleted': {
           const taskId =
-            'comment' in envelope.payload ? envelope.payload.comment.taskId : envelope.payload.taskId;
+            'comment' in envelope.payload
+              ? envelope.payload.comment.taskId
+              : envelope.payload.taskId;
           void queryClient.invalidateQueries({ queryKey: queryKeys.comments(workspaceId, taskId) });
           break;
         }
@@ -144,7 +147,9 @@ export function RealtimeProvider({
             'attachment' in envelope.payload
               ? envelope.payload.attachment.taskId
               : envelope.payload.taskId;
-          void queryClient.invalidateQueries({ queryKey: queryKeys.attachments(workspaceId, taskId) });
+          void queryClient.invalidateQueries({
+            queryKey: queryKeys.attachments(workspaceId, taskId),
+          });
           break;
         }
 
@@ -241,7 +246,12 @@ export function useRoomSubscription(scope: RoomScope, id: string | null | undefi
 export function usePresence(scope: RoomScope, id: string | null | undefined): PresenceUser[] {
   const { presence } = useRealtime();
   if (!id) return [];
-  const room = scope === 'board' ? rooms.board(id) : scope === 'project' ? rooms.project(id) : rooms.workspace(id);
+  const room =
+    scope === 'board'
+      ? rooms.board(id)
+      : scope === 'project'
+        ? rooms.project(id)
+        : rooms.workspace(id);
   return presence[room] ?? [];
 }
 

@@ -153,7 +153,7 @@ describe('tasks, ordering and movement', () => {
       const task = await createTask('Stay put');
 
       const other = await client
-        .post(`/workspaces/${workspaceId}/projects/${(await projectId())}/boards`, {
+        .post(`/workspaces/${workspaceId}/projects/${await projectId()}/boards`, {
           name: 'Second Board',
           withDefaultColumns: true,
         })
@@ -234,9 +234,7 @@ describe('tasks, ordering and movement', () => {
         .patch(`/workspaces/${workspaceId}/tasks/${task.id}`, { priority: 'URGENT' })
         .expect(200);
 
-      const updated = await client
-        .get(`/workspaces/${workspaceId}/tasks/${task.id}`)
-        .expect(200);
+      const updated = await client.get(`/workspaces/${workspaceId}/tasks/${task.id}`).expect(200);
 
       expect(updated.body.title).toBe('Original title');
       expect(updated.body.priority).toBe('URGENT');

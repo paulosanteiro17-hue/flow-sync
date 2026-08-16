@@ -47,7 +47,10 @@ export class AuthService {
       select: { id: true },
     });
     if (existing) {
-      throw AppException.conflict('An account with that email already exists', ERROR_CODES.EMAIL_TAKEN);
+      throw AppException.conflict(
+        'An account with that email already exists',
+        ERROR_CODES.EMAIL_TAKEN,
+      );
     }
 
     const passwordHash = await this.passwords.hash(input.password);

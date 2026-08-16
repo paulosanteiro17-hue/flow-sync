@@ -45,7 +45,8 @@ export const useUiStore = create<UiState>((set) => ({
   setCommandPaletteOpen: (open) => set({ commandPaletteOpen: open }),
   toggleCommandPalette: () => set((state) => ({ commandPaletteOpen: !state.commandPaletteOpen })),
   setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
-  setBoardFilters: (update) => set((state) => ({ boardFilters: { ...state.boardFilters, ...update } })),
+  setBoardFilters: (update) =>
+    set((state) => ({ boardFilters: { ...state.boardFilters, ...update } })),
   resetBoardFilters: () => set({ boardFilters: EMPTY_FILTERS }),
 }));
 

@@ -111,7 +111,10 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ): Promise<CurrentUser> {
     const cookies = request.cookies as Record<string, string | undefined> | undefined;
-    const session = await this.auth.refresh(cookies?.[COOKIE_NAMES.refreshToken], this.meta(request));
+    const session = await this.auth.refresh(
+      cookies?.[COOKIE_NAMES.refreshToken],
+      this.meta(request),
+    );
     this.establishSession(response, session);
     return this.auth.me(session.userId);
   }

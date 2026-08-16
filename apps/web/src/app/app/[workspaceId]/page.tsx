@@ -38,11 +38,13 @@ export default function DashboardPage() {
         <h1 className="truncate text-sm font-semibold">Dashboard</h1>
       </Topbar>
 
-      <main className="flex-1 overflow-y-auto scrollbar-thin p-4 sm:p-6">
+      <main className="flex-1 scrollbar-thin overflow-y-auto p-4 sm:p-6">
         <div className="mx-auto max-w-6xl space-y-6">
           <div className="flex flex-wrap items-center gap-3">
             <div>
-              <h2 className="text-2xl font-semibold tracking-tight">Good to see you, {firstName}</h2>
+              <h2 className="text-2xl font-semibold tracking-tight">
+                Good to see you, {firstName}
+              </h2>
               <p className="text-sm text-muted-foreground">
                 Here is what needs you in {workspace?.name ?? 'this workspace'}.
               </p>
@@ -56,7 +58,10 @@ export default function DashboardPage() {
           </div>
 
           {isError ? (
-            <ErrorState message="The dashboard could not be loaded." onRetry={() => void refetch()} />
+            <ErrorState
+              message="The dashboard could not be loaded."
+              onRetry={() => void refetch()}
+            />
           ) : isLoading || !data ? (
             <DashboardSkeleton />
           ) : (
@@ -171,7 +176,7 @@ export default function DashboardPage() {
                                     />
                                   </span>
                                 </span>
-                                <span className="w-9 text-right text-xs tabular-nums text-muted-foreground">
+                                <span className="w-9 text-right text-xs text-muted-foreground tabular-nums">
                                   {progress}%
                                 </span>
                               </Link>
@@ -226,7 +231,11 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      <CreateProjectDialog workspaceId={workspaceId} open={createOpen} onOpenChange={setCreateOpen} />
+      <CreateProjectDialog
+        workspaceId={workspaceId}
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+      />
     </>
   );
 }

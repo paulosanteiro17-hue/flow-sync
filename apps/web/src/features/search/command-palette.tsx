@@ -52,9 +52,15 @@ export function CommandPalette({ workspaceId }: { workspaceId: string }) {
     return () => clearTimeout(timer);
   }, [term]);
 
-  useEffect(() => {
-    if (!open) setTerm('');
-  }, [open]);
+  // Closing resets the query. Doing it in the close handler rather than in an
+  // effect keeps the reset an explicit consequence of the user's action.
+  const setPaletteOpen = (next: boolean) => {
+    if (!next) {
+      setTerm('');
+      setDebounced('');
+    }
+    setOpen(next);
+  };
 
   const { data, isFetching } = useQuery({
     queryKey: queryKeys.search(workspaceId, debounced),
@@ -67,7 +73,7 @@ export function CommandPalette({ workspaceId }: { workspaceId: string }) {
   });
 
   const go = (href: string) => {
-    setOpen(false);
+    setPaletteOpen(false);
     router.push(href);
   };
 
@@ -81,7 +87,7 @@ export function CommandPalette({ workspaceId }: { workspaceId: string }) {
   ];
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setPaletteOpen}>
       <DialogContent className="max-w-xl overflow-hidden p-0" hideClose>
         <DialogTitle className="sr-only">Search and navigate</DialogTitle>
 
@@ -102,7 +108,7 @@ export function CommandPalette({ workspaceId }: { workspaceId: string }) {
             </kbd>
           </div>
 
-          <Command.List className="max-h-[24rem] overflow-y-auto scrollbar-thin p-1.5">
+          <Command.List className="max-h-[24rem] scrollbar-thin overflow-y-auto p-1.5">
             {debounced.length >= 2 && !isFetching && !hasResults(data) ? (
               <Command.Empty className="py-8 text-center text-sm text-muted-foreground">
                 No matches for “{debounced}”.
@@ -145,7 +151,9 @@ export function CommandPalette({ workspaceId }: { workspaceId: string }) {
                       aria-hidden
                     />
                     <span className="min-w-0 flex-1 truncate">{project.name}</span>
-                    <span className="font-mono text-[11px] text-muted-foreground">{project.key}</span>
+                    <span className="font-mono text-[11px] text-muted-foreground">
+                      {project.key}
+                    </span>
                   </Command.Item>
                 ))}
               </Command.Group>

@@ -10,7 +10,11 @@ import {
   upsertTask,
 } from './board-cache';
 
-function column(id: string, rank: string, overrides: Partial<BoardColumnView> = {}): BoardColumnView {
+function column(
+  id: string,
+  rank: string,
+  overrides: Partial<BoardColumnView> = {},
+): BoardColumnView {
   return {
     id,
     name: id,

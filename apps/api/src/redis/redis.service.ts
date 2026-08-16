@@ -1,4 +1,10 @@
-import { Inject, Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  type OnModuleDestroy,
+  type OnModuleInit,
+} from '@nestjs/common';
 import Redis from 'ioredis';
 import { CONFIG_TOKEN, type AppConfig } from '../config/env';
 
@@ -162,7 +168,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   // Rate limiting (sliding window)
   // -------------------------------------------------------------------------
 
-  async consumeRateLimit(bucket: string, limit: number, windowMs: number): Promise<RateLimitResult> {
+  async consumeRateLimit(
+    bucket: string,
+    limit: number,
+    windowMs: number,
+  ): Promise<RateLimitResult> {
     if (!this.config.RATE_LIMIT_ENABLED) {
       return { allowed: true, remaining: limit, retryAfterMs: 0 };
     }

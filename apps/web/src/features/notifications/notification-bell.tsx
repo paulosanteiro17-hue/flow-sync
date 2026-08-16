@@ -46,13 +46,11 @@ export function NotificationBell({ workspaceId }: { workspaceId: string }) {
           variant="ghost"
           size="icon"
           className="relative"
-          aria-label={
-            unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'
-          }
+          aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'}
         >
           <Bell />
           {unreadCount > 0 ? (
-            <span className="absolute right-1 top-1 flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-4 text-primary-foreground">
+            <span className="absolute top-1 right-1 flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-4 font-bold text-primary-foreground">
               {unreadCount > 99 ? '99+' : unreadCount}
             </span>
           ) : null}
@@ -74,7 +72,7 @@ export function NotificationBell({ workspaceId }: { workspaceId: string }) {
           ) : null}
         </div>
 
-        <div className="max-h-[26rem] overflow-y-auto scrollbar-thin">
+        <div className="max-h-[26rem] scrollbar-thin overflow-y-auto">
           {items.length === 0 ? (
             <EmptyState
               icon={<Bell />}
@@ -106,7 +104,7 @@ export function NotificationBell({ workspaceId }: { workspaceId: string }) {
 
                       <span className="min-w-0 flex-1">
                         <span className="flex items-start gap-2">
-                          <span className="flex-1 text-sm font-medium leading-snug">
+                          <span className="flex-1 text-sm leading-snug font-medium">
                             {notification.title}
                           </span>
                           {!notification.readAt ? (

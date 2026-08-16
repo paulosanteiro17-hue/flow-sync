@@ -65,6 +65,22 @@ services:
     volumes:
       - uploads-data:/app/var/uploads
 
+  # One-shot: populates the Northstar Labs demo workspace.
+  #   docker compose --profile seed run --rm seed
+  seed:
+    profiles: ['seed']
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      target: seed
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-flowsync}:${POSTGRES_PASSWORD:-flowsync}@postgres:5432/${POSTGRES_DB:-flowsync}?schema=public
+      DEMO_PASSWORD: ${DEMO_PASSWORD:-DemoFlow2024!}
+
   web:
     build:
       context: .

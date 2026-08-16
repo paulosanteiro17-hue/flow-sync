@@ -72,7 +72,9 @@ export class NotificationsService {
         notifyOnDueSoon: true,
       },
     });
-    const preferenceByUser = new Map(preferences.map((preference) => [preference.userId, preference]));
+    const preferenceByUser = new Map(
+      preferences.map((preference) => [preference.userId, preference]),
+    );
 
     const allowed = relevant.filter((input) => {
       const flag = PREFERENCE_BY_TYPE[input.type];
@@ -159,7 +161,11 @@ export class NotificationsService {
     });
   }
 
-  async markRead(userId: string, workspaceId: string, ids: string[]): Promise<{ unreadCount: number }> {
+  async markRead(
+    userId: string,
+    workspaceId: string,
+    ids: string[],
+  ): Promise<{ unreadCount: number }> {
     await this.access.requireWorkspace(userId, workspaceId);
     // Scoping the update by userId means one member can never mark another's notifications.
     await this.prisma.notification.updateMany({
@@ -180,7 +186,9 @@ export class NotificationsService {
 
   async remove(userId: string, workspaceId: string, id: string): Promise<void> {
     await this.access.requireWorkspace(userId, workspaceId);
-    const result = await this.prisma.notification.deleteMany({ where: { id, userId, workspaceId } });
+    const result = await this.prisma.notification.deleteMany({
+      where: { id, userId, workspaceId },
+    });
     if (result.count === 0) throw AppException.notFound('Notification not found');
   }
 
@@ -192,7 +200,9 @@ export class NotificationsService {
       body: row.body,
       readAt: row.readAt?.toISOString() ?? null,
       createdAt: row.createdAt.toISOString(),
-      actor: row.actor ? { id: row.actor.id, name: row.actor.name, avatarUrl: row.actor.avatarUrl } : null,
+      actor: row.actor
+        ? { id: row.actor.id, name: row.actor.name, avatarUrl: row.actor.avatarUrl }
+        : null,
       link: row.link,
       taskKey: row.task?.key ?? null,
     };

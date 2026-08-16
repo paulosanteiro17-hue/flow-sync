@@ -70,7 +70,8 @@ export function useDeleteProject(workspaceId: string) {
   return useMutation({
     mutationFn: (projectId: string) =>
       api.delete<void>(`/workspaces/${workspaceId}/projects/${projectId}`),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['workspace', workspaceId, 'projects'] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['workspace', workspaceId, 'projects'] }),
   });
 }
 
@@ -79,7 +80,9 @@ export function useProjectMembers(workspaceId: string, projectId: string) {
 
   const add = useMutation({
     mutationFn: (userIds: string[]) =>
-      api.post<ProjectDetail>(`/workspaces/${workspaceId}/projects/${projectId}/members`, { userIds }),
+      api.post<ProjectDetail>(`/workspaces/${workspaceId}/projects/${projectId}/members`, {
+        userIds,
+      }),
     onSuccess: (project) =>
       queryClient.setQueryData(queryKeys.project(workspaceId, projectId), project),
   });

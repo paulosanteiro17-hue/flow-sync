@@ -29,9 +29,7 @@ export class HealthController {
     database: boolean;
     redis: boolean | 'disabled';
   }> {
-    const database = await this.prisma
-      .$queryRaw`SELECT 1`.then(() => true)
-      .catch(() => false);
+    const database = await this.prisma.$queryRaw`SELECT 1`.then(() => true).catch(() => false);
     const redis = this.redis.enabled ? await this.redis.ping() : ('disabled' as const);
     const healthy = database && redis !== false;
     return { status: healthy ? 'ok' : 'degraded', database, redis };

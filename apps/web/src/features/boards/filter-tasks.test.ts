@@ -70,7 +70,9 @@ describe('filterTasks', () => {
   });
 
   it('matches on title and key, case-insensitively', () => {
-    expect(filterTasks(TASKS, filters({ search: 'CAROUSEL' }), NOW).map((t) => t.id)).toEqual(['2']);
+    expect(filterTasks(TASKS, filters({ search: 'CAROUSEL' }), NOW).map((t) => t.id)).toEqual([
+      '2',
+    ]);
     expect(filterTasks(TASKS, filters({ search: 'web-3' }), NOW).map((t) => t.id)).toEqual(['3']);
   });
 

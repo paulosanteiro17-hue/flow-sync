@@ -138,7 +138,10 @@ describe('realtime gateway', () => {
       const inProgress = tenant.columns.find((column) => column.name === 'In Progress')!;
 
       const task = await insider
-        .post(`/workspaces/${tenant.workspaceId}/tasks`, { columnId: todo.id, title: 'Broadcast me' })
+        .post(`/workspaces/${tenant.workspaceId}/tasks`, {
+          columnId: todo.id,
+          title: 'Broadcast me',
+        })
         .expect(201);
 
       await insider

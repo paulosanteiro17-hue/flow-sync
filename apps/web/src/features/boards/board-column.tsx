@@ -54,7 +54,7 @@ export function BoardColumn({
           style={{ backgroundColor: column.color }}
           aria-hidden
         />
-        <h2 className="truncate text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <h2 className="truncate text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           {column.name}
         </h2>
         <span
@@ -65,7 +65,9 @@ export function BoardColumn({
               : 'text-muted-foreground/70',
           )}
           title={
-            column.wipLimit !== null ? `${tasks.length} of ${column.wipLimit} (WIP limit)` : undefined
+            column.wipLimit !== null
+              ? `${tasks.length} of ${column.wipLimit} (WIP limit)`
+              : undefined
           }
         >
           {tasks.length}
@@ -110,7 +112,10 @@ export function BoardColumn({
           isOver && 'bg-primary/5 ring-2 ring-primary/30',
         )}
       >
-        <SortableContext items={tasks.map((task) => task.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={tasks.map((task) => task.id)}
+          strategy={verticalListSortingStrategy}
+        >
           {tasks.map((task) => (
             <TaskCard key={task.id} task={task} onOpen={onOpenTask} />
           ))}

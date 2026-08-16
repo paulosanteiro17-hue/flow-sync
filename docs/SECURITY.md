@@ -6,16 +6,16 @@ an automated test.
 
 ## 1. Authentication
 
-| Control | Implementation | Test |
-|---|---|---|
-| Password hashing | Argon2id (`argon2`), memory 19 MiB / time 2 / parallelism 1 — OWASP 2024 baseline | `auth.e2e-spec.ts` |
-| Password policy | min 10 chars, rejects the top-N breached list shipped in `packages/shared` | ✅ |
-| Access token | JWT HS256, 15 min TTL, `httpOnly` `fs_at` cookie, never in JS-readable storage | ✅ |
-| Refresh token | 30 day TTL, opaque 32-byte random, stored SHA-256-hashed, rotated on every use | ✅ |
-| Refresh reuse detection | replaying a consumed token revokes the entire token family | ✅ |
-| Sign-out | deletes the refresh row and clears all auth cookies | ✅ |
-| Timing | sign-in performs a dummy hash verification for unknown emails (no user enumeration) | ✅ |
-| Password reset | architecture in place (`PasswordResetToken`, hashed, single-use, 1 h TTL) with a console mailer in development | ✅ |
+| Control                 | Implementation                                                                                                 | Test               |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------ |
+| Password hashing        | Argon2id (`argon2`), memory 19 MiB / time 2 / parallelism 1 — OWASP 2024 baseline                              | `auth.e2e-spec.ts` |
+| Password policy         | min 10 chars, rejects the top-N breached list shipped in `packages/shared`                                     | ✅                 |
+| Access token            | JWT HS256, 15 min TTL, `httpOnly` `fs_at` cookie, never in JS-readable storage                                 | ✅                 |
+| Refresh token           | 30 day TTL, opaque 32-byte random, stored SHA-256-hashed, rotated on every use                                 | ✅                 |
+| Refresh reuse detection | replaying a consumed token revokes the entire token family                                                     | ✅                 |
+| Sign-out                | deletes the refresh row and clears all auth cookies                                                            | ✅                 |
+| Timing                  | sign-in performs a dummy hash verification for unknown emails (no user enumeration)                            | ✅                 |
+| Password reset          | architecture in place (`PasswordResetToken`, hashed, single-use, 1 h TTL) with a console mailer in development | ✅                 |
 
 ## 2. Session & transport
 
@@ -40,25 +40,25 @@ an automated test.
 
 ### Permission matrix
 
-| Action | Owner | Admin | Member | Guest |
-|---|:--:|:--:|:--:|:--:|
-| View projects they are a member of | ✅ | ✅ | ✅ | ✅ |
-| View all workspace projects | ✅ | ✅ | ✅ | ❌ |
-| Create / edit project | ✅ | ✅ | ❌ | ❌ |
-| Archive / delete project | ✅ | ✅ | ❌ | ❌ |
-| Manage project members | ✅ | ✅ | ❌ | ❌ |
-| Create board / column, reorder | ✅ | ✅ | ✅ | ❌ |
-| Create / edit / move task | ✅ | ✅ | ✅ | ❌ |
-| Delete task | ✅ | ✅ | ✅ (own) | ❌ |
-| Comment | ✅ | ✅ | ✅ | ✅ |
-| Edit / delete own comment | ✅ | ✅ | ✅ | ✅ |
-| Delete any comment | ✅ | ✅ | ❌ | ❌ |
-| Upload attachment | ✅ | ✅ | ✅ | ❌ |
-| Invite member | ✅ | ✅ | ❌ | ❌ |
-| Change member role | ✅ | ✅ (below own) | ❌ | ❌ |
-| Remove member | ✅ | ✅ (not Owner) | ❌ | ❌ |
-| Edit workspace settings | ✅ | ✅ | ❌ | ❌ |
-| Transfer ownership / delete workspace | ✅ | ❌ | ❌ | ❌ |
+| Action                                | Owner |     Admin      |  Member  | Guest |
+| ------------------------------------- | :---: | :------------: | :------: | :---: |
+| View projects they are a member of    |  ✅   |       ✅       |    ✅    |  ✅   |
+| View all workspace projects           |  ✅   |       ✅       |    ✅    |  ❌   |
+| Create / edit project                 |  ✅   |       ✅       |    ❌    |  ❌   |
+| Archive / delete project              |  ✅   |       ✅       |    ❌    |  ❌   |
+| Manage project members                |  ✅   |       ✅       |    ❌    |  ❌   |
+| Create board / column, reorder        |  ✅   |       ✅       |    ✅    |  ❌   |
+| Create / edit / move task             |  ✅   |       ✅       |    ✅    |  ❌   |
+| Delete task                           |  ✅   |       ✅       | ✅ (own) |  ❌   |
+| Comment                               |  ✅   |       ✅       |    ✅    |  ✅   |
+| Edit / delete own comment             |  ✅   |       ✅       |    ✅    |  ✅   |
+| Delete any comment                    |  ✅   |       ✅       |    ❌    |  ❌   |
+| Upload attachment                     |  ✅   |       ✅       |    ✅    |  ❌   |
+| Invite member                         |  ✅   |       ✅       |    ❌    |  ❌   |
+| Change member role                    |  ✅   | ✅ (below own) |    ❌    |  ❌   |
+| Remove member                         |  ✅   | ✅ (not Owner) |    ❌    |  ❌   |
+| Edit workspace settings               |  ✅   |       ✅       |    ❌    |  ❌   |
+| Transfer ownership / delete workspace |  ✅   |       ❌       |    ❌    |  ❌   |
 
 Invariant: a workspace always has at least one Owner; the last Owner can neither be
 demoted nor removed.
@@ -78,7 +78,7 @@ demoted nor removed.
 
 ## 5. File uploads
 
-- Size cap (`UPLOAD_MAX_BYTES`, default 10 MiB) enforced by multer *and* re-checked.
+- Size cap (`UPLOAD_MAX_BYTES`, default 10 MiB) enforced by multer _and_ re-checked.
 - Extension allowlist + MIME allowlist + magic-byte sniffing; a mismatch is rejected.
 - Filenames are sanitised for display and **never** used as storage keys — keys are
   `{workspaceId}/{taskId}/{uuid}{ext}`, so path traversal is structurally impossible.
@@ -91,17 +91,17 @@ demoted nor removed.
 Redis-backed sliding window, keyed by IP + route, with tighter per-user buckets on
 authenticated routes.
 
-| Bucket | Limit |
-|---|---|
-| Sign in | 5 / 15 min per IP+email, plus exponential lockout |
-| Sign up | 10 / hour per IP |
-| Password reset request | 5 / hour per IP+email |
-| Invitations | 30 / hour per workspace |
-| Comments | 60 / min per user |
-| Search | 60 / min per user |
-| Uploads | 30 / hour per user |
-| WebSocket connections | 20 / min per IP |
-| Global API | 300 / min per user |
+| Bucket                 | Limit                                             |
+| ---------------------- | ------------------------------------------------- |
+| Sign in                | 5 / 15 min per IP+email, plus exponential lockout |
+| Sign up                | 10 / hour per IP                                  |
+| Password reset request | 5 / hour per IP+email                             |
+| Invitations            | 30 / hour per workspace                           |
+| Comments               | 60 / min per user                                 |
+| Search                 | 60 / min per user                                 |
+| Uploads                | 30 / hour per user                                |
+| WebSocket connections  | 20 / min per IP                                   |
+| Global API             | 300 / min per user                                |
 
 ## 7. WebSocket security
 
@@ -143,6 +143,6 @@ authenticated routes.
 
 ## 12. Review log
 
-| Date | Finding | Severity | Resolution |
-|---|---|---|---|
-| _(populated during Phase 21)_ | | | |
+| Date                          | Finding | Severity | Resolution |
+| ----------------------------- | ------- | -------- | ---------- |
+| _(populated during Phase 21)_ |         |          |            |

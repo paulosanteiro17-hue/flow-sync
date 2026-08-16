@@ -26,7 +26,13 @@ import {
 } from '@/components/ui/dialog';
 import { Field } from '@/components/ui/form';
 import { Input, Textarea } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { useCreateProject } from './use-projects';
 
@@ -136,9 +142,7 @@ export function CreateProjectDialog({ workspaceId, open, onOpenChange }: CreateP
             <Field label="Status" htmlFor="project-status">
               <Select
                 defaultValue="PLANNING"
-                onValueChange={(value) =>
-                  setValue('status', value as CreateProjectInput['status'])
-                }
+                onValueChange={(value) => setValue('status', value as CreateProjectInput['status'])}
               >
                 <SelectTrigger id="project-status">
                   <SelectValue />

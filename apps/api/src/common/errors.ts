@@ -39,7 +39,12 @@ export class AppException extends HttpException {
   }
 
   static validation(message: string, details?: AppErrorDetail[]): AppException {
-    return new AppException(ERROR_CODES.VALIDATION_FAILED, message, HttpStatus.BAD_REQUEST, details);
+    return new AppException(
+      ERROR_CODES.VALIDATION_FAILED,
+      message,
+      HttpStatus.BAD_REQUEST,
+      details,
+    );
   }
 
   static unauthenticated(message = 'Authentication required'): AppException {
@@ -81,6 +86,10 @@ export class AppException extends HttpException {
   }
 
   static unsupportedFile(message: string): AppException {
-    return new AppException(ERROR_CODES.UNSUPPORTED_FILE, message, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    return new AppException(
+      ERROR_CODES.UNSUPPORTED_FILE,
+      message,
+      HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+    );
   }
 }

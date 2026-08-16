@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  PROJECT_STATUSES,
-  PROJECT_STATUS_LABELS,
-  can,
-  type ProjectStatus,
-} from '@flowsync/shared';
+import { PROJECT_STATUSES, PROJECT_STATUS_LABELS, can, type ProjectStatus } from '@flowsync/shared';
 import { KanbanSquare, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -14,7 +9,13 @@ import { Topbar } from '@/components/layout/topbar';
 import { UserAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { EmptyState, ErrorState, Skeleton } from '@/components/ui/misc';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useProject, useUpdateProject } from '@/features/projects/use-projects';
 import { useRoomSubscription } from '@/features/realtime/realtime-provider';
 import { useWorkspace } from '@/features/workspaces/use-workspaces';
@@ -44,7 +45,7 @@ export default function ProjectPage() {
         <h1 className="truncate text-sm font-semibold">{project?.name ?? 'Project'}</h1>
       </Topbar>
 
-      <main className="flex-1 overflow-y-auto scrollbar-thin p-4 sm:p-6">
+      <main className="flex-1 scrollbar-thin overflow-y-auto p-4 sm:p-6">
         <div className="mx-auto max-w-5xl space-y-6">
           {isError ? (
             <ErrorState
@@ -81,7 +82,9 @@ export default function ProjectPage() {
                 <Select
                   value={project.status}
                   disabled={!canEdit}
-                  onValueChange={(value) => updateProject.mutate({ status: value as ProjectStatus })}
+                  onValueChange={(value) =>
+                    updateProject.mutate({ status: value as ProjectStatus })
+                  }
                 >
                   <SelectTrigger className="w-40" aria-label="Project status">
                     <SelectValue />

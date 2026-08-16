@@ -125,7 +125,10 @@ export class SearchService {
 
     const completed = await this.prisma.task.groupBy({
       by: ['projectId'],
-      where: { projectId: { in: projects.map((project) => project.id) }, completedAt: { not: null } },
+      where: {
+        projectId: { in: projects.map((project) => project.id) },
+        completedAt: { not: null },
+      },
       _count: { _all: true },
     });
     const completedByProject = new Map(completed.map((row) => [row.projectId, row._count._all]));

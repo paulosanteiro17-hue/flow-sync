@@ -29,10 +29,19 @@ export interface UploadedFile {
  * is the classic upload attack, so the declared type has to survive a sniff.
  */
 const MAGIC_BYTES: Array<{ mime: string; test: (buffer: Buffer) => boolean }> = [
-  { mime: 'image/png', test: (b) => b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) },
+  {
+    mime: 'image/png',
+    test: (b) =>
+      b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])),
+  },
   { mime: 'image/jpeg', test: (b) => b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff },
   { mime: 'image/gif', test: (b) => b.subarray(0, 3).toString('ascii') === 'GIF' },
-  { mime: 'image/webp', test: (b) => b.subarray(0, 4).toString('ascii') === 'RIFF' && b.subarray(8, 12).toString('ascii') === 'WEBP' },
+  {
+    mime: 'image/webp',
+    test: (b) =>
+      b.subarray(0, 4).toString('ascii') === 'RIFF' &&
+      b.subarray(8, 12).toString('ascii') === 'WEBP',
+  },
   { mime: 'application/pdf', test: (b) => b.subarray(0, 5).toString('ascii') === '%PDF-' },
   { mime: 'application/zip', test: (b) => b[0] === 0x50 && b[1] === 0x4b },
 ];
@@ -177,7 +186,11 @@ export class AttachmentsService {
 
     const context = await this.access.requireTask(userId, attachment.taskId);
     if (attachment.uploadedById !== userId) {
-      this.access.assert(context.role, 'attachment:delete_any', 'You can only delete your own uploads');
+      this.access.assert(
+        context.role,
+        'attachment:delete_any',
+        'You can only delete your own uploads',
+      );
     }
 
     await this.prisma.attachment.delete({ where: { id: attachment.id } });
@@ -221,7 +234,9 @@ export class AttachmentsService {
 
     const extension = extname(file.originalname).toLowerCase();
     if (!(ALLOWED_ATTACHMENT_EXTENSIONS as readonly string[]).includes(extension)) {
-      throw AppException.unsupportedFile(`Files with the extension ${extension || '(none)'} are not allowed`);
+      throw AppException.unsupportedFile(
+        `Files with the extension ${extension || '(none)'} are not allowed`,
+      );
     }
 
     const signature = MAGIC_BYTES.find((entry) => entry.mime === file.mimetype);
@@ -240,7 +255,10 @@ export class AttachmentsService {
     return (
       filename
         .replace(/[/\\]/g, '_')
-        .replace(new RegExp('[\\u0000-\\u001f\\u007f]', 'g'), '')
+        // Control characters are stripped on purpose: they are exactly what a
+        // crafted filename would use to break out of a log line or a header.
+        // eslint-disable-next-line no-control-regex
+        .replace(/[\u0000-\u001f\u007f]/g, '')
         .trim()
         .slice(0, 180) || 'file'
     );

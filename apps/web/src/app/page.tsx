@@ -83,7 +83,7 @@ function Hero() {
     <section className="relative overflow-hidden">
       <div className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,black,transparent)]" />
 
-      <div className="relative mx-auto max-w-6xl px-4 pb-16 pt-16 sm:px-6 sm:pb-24 sm:pt-24">
+      <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-16 sm:px-6 sm:pt-24 sm:pb-24">
         <div className="mx-auto max-w-3xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
             <span className="relative flex size-1.5">
@@ -98,8 +98,8 @@ function Hero() {
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
-            Plan projects, collaborate in real time, and keep your team perfectly in sync.
-            When someone moves a card, everyone sees it move.
+            Plan projects, collaborate in real time, and keep your team perfectly in sync. When
+            someone moves a card, everyone sees it move.
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -159,8 +159,8 @@ function RealtimeSection() {
           </h2>
           <p className="mt-4 text-muted-foreground">
             Every change is broadcast to the room it belongs to, carrying a sequence number so a
-            client can tell the difference between &ldquo;nothing happened&rdquo; and
-            &ldquo;I missed something&rdquo; — and resynchronise when it matters.
+            client can tell the difference between &ldquo;nothing happened&rdquo; and &ldquo;I
+            missed something&rdquo; — and resynchronise when it matters.
           </p>
         </div>
 
@@ -317,10 +317,26 @@ function TeamSection() {
 
 function SecuritySection() {
   const items = [
-    { icon: Lock, title: 'httpOnly session cookies', body: 'No token is readable by JavaScript. Refresh tokens rotate and detect reuse.' },
-    { icon: ShieldCheck, title: 'Enforced on the server', body: 'Roles and tenancy are checked in the query that loads the resource, never in the UI alone.' },
-    { icon: KeyRound, title: 'Isolated workspaces', body: 'A member of one workspace cannot read, write or subscribe to another. Tested explicitly.' },
-    { icon: Zap, title: 'Rate limited', body: 'Sign-in, invitations, comments, search, uploads and socket connections all have budgets.' },
+    {
+      icon: Lock,
+      title: 'httpOnly session cookies',
+      body: 'No token is readable by JavaScript. Refresh tokens rotate and detect reuse.',
+    },
+    {
+      icon: ShieldCheck,
+      title: 'Enforced on the server',
+      body: 'Roles and tenancy are checked in the query that loads the resource, never in the UI alone.',
+    },
+    {
+      icon: KeyRound,
+      title: 'Isolated workspaces',
+      body: 'A member of one workspace cannot read, write or subscribe to another. Tested explicitly.',
+    },
+    {
+      icon: Zap,
+      title: 'Rate limited',
+      body: 'Sign-in, invitations, comments, search, uploads and socket connections all have budgets.',
+    },
   ];
 
   return (
@@ -338,7 +354,10 @@ function SecuritySection() {
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
           {items.map((item) => (
-            <div key={item.title} className="flex gap-4 rounded-xl border border-border bg-card p-6">
+            <div
+              key={item.title}
+              className="flex gap-4 rounded-xl border border-border bg-card p-6"
+            >
               <item.icon className="size-5 shrink-0 text-primary" />
               <div>
                 <h3 className="font-medium">{item.title}</h3>
@@ -367,7 +386,12 @@ function PricingPreview() {
       price: '$8',
       cadence: 'per user / month',
       description: 'For teams that live in their board.',
-      features: ['Everything in Free', 'Guest collaborators', 'Advanced filters', 'Priority support'],
+      features: [
+        'Everything in Free',
+        'Guest collaborators',
+        'Advanced filters',
+        'Priority support',
+      ],
       highlighted: true,
     },
     {
@@ -386,8 +410,8 @@ function PricingPreview() {
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Simple pricing</h2>
           <p className="mt-4 text-muted-foreground">
-            An illustration of how FlowSync would be packaged. Billing is not part of this
-            portfolio build, so these plans are presentational.
+            An illustration of how FlowSync would be packaged. Billing is not part of this portfolio
+            build, so these plans are presentational.
           </p>
         </div>
 

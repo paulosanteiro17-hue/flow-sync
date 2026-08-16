@@ -58,16 +58,16 @@ export function BoardView({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
-  const visibleTasks = useMemo(() => filterTasks(snapshot.tasks, filters), [snapshot.tasks, filters]);
+  const visibleTasks = useMemo(
+    () => filterTasks(snapshot.tasks, filters),
+    [snapshot.tasks, filters],
+  );
   const filtered = visibleTasks.length !== snapshot.tasks.length;
 
   const tasksByColumn = useMemo(() => {
     const map = new Map<string, TaskSummary[]>();
     for (const column of snapshot.columns) {
-      map.set(
-        column.id,
-        tasksInColumn({ ...snapshot, tasks: visibleTasks }, column.id),
-      );
+      map.set(column.id, tasksInColumn({ ...snapshot, tasks: visibleTasks }, column.id));
     }
     return map;
   }, [snapshot, visibleTasks]);
@@ -131,7 +131,7 @@ export function BoardView({
         },
       }}
     >
-      <div className="flex h-full gap-3 overflow-x-auto scrollbar-thin px-3 pb-4 sm:gap-4 sm:px-4">
+      <div className="flex h-full scrollbar-thin gap-3 overflow-x-auto px-3 pb-4 sm:gap-4 sm:px-4">
         {snapshot.columns.map((column) => (
           <BoardColumn
             key={column.id}

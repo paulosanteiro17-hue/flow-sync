@@ -14,7 +14,13 @@ import { Topbar } from '@/components/layout/topbar';
 import { LabelChip } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { EmptyState, ErrorState, Skeleton } from '@/components/ui/misc';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useMyTasks } from '@/features/tasks/use-tasks';
 import { cn, describeDueDate } from '@/lib/utils';
 
@@ -37,7 +43,12 @@ function MyTasksInner() {
   const [priority, setPriority] = useState<TaskPriority | 'ALL'>('ALL');
   const [sort, setSort] = useState<NonNullable<MyTasksQuery['sort']>>('due');
 
-  const { data: tasks, isLoading, isError, refetch } = useMyTasks(workspaceId, {
+  const {
+    data: tasks,
+    isLoading,
+    isError,
+    refetch,
+  } = useMyTasks(workspaceId, {
     bucket,
     sort,
     ...(search.trim() ? { search: search.trim() } : {}),
@@ -50,7 +61,7 @@ function MyTasksInner() {
         <h1 className="truncate text-sm font-semibold">My Tasks</h1>
       </Topbar>
 
-      <main className="flex-1 overflow-y-auto scrollbar-thin p-4 sm:p-6">
+      <main className="flex-1 scrollbar-thin overflow-y-auto p-4 sm:p-6">
         <div className="mx-auto max-w-4xl space-y-5">
           <nav className="flex flex-wrap gap-1" aria-label="Task buckets">
             {BUCKETS.map((option) => (
@@ -80,7 +91,10 @@ function MyTasksInner() {
               aria-label="Search my tasks"
             />
 
-            <Select value={priority} onValueChange={(value) => setPriority(value as TaskPriority | 'ALL')}>
+            <Select
+              value={priority}
+              onValueChange={(value) => setPriority(value as TaskPriority | 'ALL')}
+            >
               <SelectTrigger className="h-9 w-40" aria-label="Filter by priority">
                 <SelectValue />
               </SelectTrigger>
@@ -135,7 +149,9 @@ function MyTasksInner() {
                       href={`/app/${workspaceId}/boards/${task.boardId}?task=${task.id}`}
                       className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 transition-colors hover:bg-accent/50"
                     >
-                      <span className="font-mono text-[11px] text-muted-foreground">{task.key}</span>
+                      <span className="font-mono text-[11px] text-muted-foreground">
+                        {task.key}
+                      </span>
                       <span
                         className={cn(
                           'min-w-0 flex-1 truncate text-sm font-medium',

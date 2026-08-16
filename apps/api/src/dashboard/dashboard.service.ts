@@ -87,7 +87,9 @@ export class DashboardService {
       recentProjects: projects.slice(0, 6),
       recentActivity: activity.items,
       stats: {
-        assignedOpen: await this.prisma.task.count({ where: { ...assignedToMe, completedAt: null } }),
+        assignedOpen: await this.prisma.task.count({
+          where: { ...assignedToMe, completedAt: null },
+        }),
         completedThisWeek,
         dueSoon: dueSoonSummaries.length,
         overdue: overdueSummaries.length,

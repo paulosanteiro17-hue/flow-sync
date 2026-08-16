@@ -51,7 +51,7 @@ export function BoardToolbar({
   return (
     <div className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2 sm:px-4">
       <div className="relative min-w-0 flex-1 sm:max-w-xs">
-        <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+        <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={filters.search}
           onChange={(event) => setFilters({ search: event.target.value })}
@@ -73,7 +73,7 @@ export function BoardToolbar({
         </PopoverTrigger>
 
         <PopoverContent className="w-72 p-0">
-          <div className="max-h-[26rem] overflow-y-auto scrollbar-thin p-3">
+          <div className="max-h-[26rem] scrollbar-thin overflow-y-auto p-3">
             <FilterSection title="Priority">
               {TASK_PRIORITIES.map((priority) => (
                 <FilterRow
@@ -183,7 +183,7 @@ export function BoardToolbar({
 function FilterSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <h3 className="mb-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
         {title}
       </h3>
       <div className="space-y-0.5">{children}</div>

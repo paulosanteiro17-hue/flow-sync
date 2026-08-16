@@ -7,3 +7,4 @@ test-results
 package-lock.json
 apps/api/prisma/migrations
 var
+apps/web/next-env.d.ts

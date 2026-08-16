@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  Activity,
-  CheckSquare,
-  LayoutDashboard,
-  Plus,
-  Settings,
-  Users,
-  X,
-} from 'lucide-react';
+import { Activity, CheckSquare, LayoutDashboard, Plus, Settings, Users, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -79,7 +71,7 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
           <WorkspaceSwitcher workspaceId={workspaceId} />
         </div>
 
-        <nav className="flex-1 overflow-y-auto scrollbar-thin px-3 pb-4" aria-label="Main">
+        <nav className="flex-1 scrollbar-thin overflow-y-auto px-3 pb-4" aria-label="Main">
           <ul className="space-y-0.5">
             {links.map((link) => (
               <li key={link.href}>
@@ -103,7 +95,7 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
 
           <div className="mt-6">
             <div className="flex items-center justify-between px-2.5 pb-1.5">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <h2 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                 Projects
               </h2>
               {can(workspace?.role, 'project:create') ? (
@@ -156,15 +148,17 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
                 })}
               </ul>
             ) : (
-              <p className="px-2.5 py-2 text-xs text-muted-foreground">
-                No projects yet.
-              </p>
+              <p className="px-2.5 py-2 text-xs text-muted-foreground">No projects yet.</p>
             )}
           </div>
         </nav>
       </aside>
 
-      <CreateProjectDialog workspaceId={workspaceId} open={createOpen} onOpenChange={setCreateOpen} />
+      <CreateProjectDialog
+        workspaceId={workspaceId}
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+      />
     </>
   );
 }

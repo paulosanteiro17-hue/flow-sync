@@ -22,8 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     title: 'FlowSync — Move work forward, together',
-    description:
-      'Plan projects, collaborate in real time, and keep your team perfectly in sync.',
+    description: 'Plan projects, collaborate in real time, and keep your team perfectly in sync.',
     siteName: 'FlowSync',
   },
   robots: { index: true, follow: true },
@@ -44,7 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-dvh antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
         >
           Skip to content
         </a>

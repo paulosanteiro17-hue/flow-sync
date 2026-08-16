@@ -24,7 +24,11 @@ export class CookieService {
   }
 
   setAccessToken(response: Response, token: string): void {
-    response.cookie(COOKIE_NAMES.accessToken, token, this.base(true, this.config.JWT_ACCESS_TTL * 1000));
+    response.cookie(
+      COOKIE_NAMES.accessToken,
+      token,
+      this.base(true, this.config.JWT_ACCESS_TTL * 1000),
+    );
   }
 
   setRefreshToken(response: Response, token: string): void {

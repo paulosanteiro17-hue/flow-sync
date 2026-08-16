@@ -96,7 +96,7 @@ export const TaskCard = memo(function TaskCard({ task, onOpen, overlay }: TaskCa
 
       <p
         className={cn(
-          'text-[13px] font-medium leading-snug text-card-foreground',
+          'text-[13px] leading-snug font-medium text-card-foreground',
           task.isDone && 'line-through decoration-muted-foreground/60',
         )}
       >

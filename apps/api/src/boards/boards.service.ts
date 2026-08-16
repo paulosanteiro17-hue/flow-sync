@@ -46,7 +46,14 @@ export class BoardsService {
     await this.access.requireProject(userId, projectId);
     const boards = await this.prisma.board.findMany({
       where: { projectId },
-      select: { id: true, name: true, projectId: true, isDefault: true, rank: true, createdAt: true },
+      select: {
+        id: true,
+        name: true,
+        projectId: true,
+        isDefault: true,
+        rank: true,
+        createdAt: true,
+      },
       orderBy: { rank: 'asc' },
     });
     return boards.map((board) => ({ ...board, createdAt: board.createdAt.toISOString() }));
@@ -81,7 +88,14 @@ export class BoardsService {
             }
           : {}),
       },
-      select: { id: true, name: true, projectId: true, isDefault: true, rank: true, createdAt: true },
+      select: {
+        id: true,
+        name: true,
+        projectId: true,
+        isDefault: true,
+        rank: true,
+        createdAt: true,
+      },
     });
 
     const summary: BoardSummary = { ...board, createdAt: board.createdAt.toISOString() };
@@ -94,7 +108,12 @@ export class BoardsService {
       metadata: { boardName: board.name },
     });
 
-    await this.realtime.emitToProject(projectId, 'board.created', { board: summary }, { actorId: userId });
+    await this.realtime.emitToProject(
+      projectId,
+      'board.created',
+      { board: summary },
+      { actorId: userId },
+    );
     return summary;
   }
 
@@ -154,7 +173,14 @@ export class BoardsService {
     const board = await this.prisma.board.update({
       where: { id: boardId },
       data: input,
-      select: { id: true, name: true, projectId: true, isDefault: true, rank: true, createdAt: true },
+      select: {
+        id: true,
+        name: true,
+        projectId: true,
+        isDefault: true,
+        rank: true,
+        createdAt: true,
+      },
     });
 
     const summary: BoardSummary = { ...board, createdAt: board.createdAt.toISOString() };
@@ -358,7 +384,8 @@ export class BoardsService {
         where: { id: moveTasksTo, boardId: column.boardId },
         select: { id: true },
       });
-      if (!destination) throw AppException.validation('The destination column is not on this board');
+      if (!destination)
+        throw AppException.validation('The destination column is not on this board');
       target = destination.id;
     }
 
@@ -453,7 +480,14 @@ export class BoardsService {
   private async emitResync(boardId: string, actorId: string): Promise<void> {
     const board = await this.prisma.board.findUniqueOrThrow({
       where: { id: boardId },
-      select: { id: true, name: true, projectId: true, isDefault: true, rank: true, createdAt: true },
+      select: {
+        id: true,
+        name: true,
+        projectId: true,
+        isDefault: true,
+        rank: true,
+        createdAt: true,
+      },
     });
     await this.realtime.emitToBoard(
       boardId,
