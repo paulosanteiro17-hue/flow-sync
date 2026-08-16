@@ -8,6 +8,7 @@ import {
   slugify,
   type CreateInvitationInput,
   type CreateLabelInput,
+  type CreatedInvitation,
   type CreateWorkspaceInput,
   type InvitationView,
   type LabelView,
@@ -362,11 +363,19 @@ export class WorkspacesService {
     }));
   }
 
+  /**
+   * Creates (or refreshes) an invitation and returns it **with** the accept link.
+   *
+   * The link is returned exactly once, here, because only the hash is persisted.
+   * That is what lets the inviter pass it on directly — which matters whenever
+   * email delivery is not wired up, and is how most products offer "copy invite
+   * link" anyway.
+   */
   async invite(
     actorId: string,
     workspaceId: string,
     input: CreateInvitationInput,
-  ): Promise<InvitationView> {
+  ): Promise<CreatedInvitation> {
     const actor = await this.access.requireWorkspace(actorId, workspaceId);
     if (!assignableRoles(actor.role).includes(input.role)) {
       throw AppException.forbidden(`You cannot invite someone as ${ROLE_LABELS[input.role]}`);
@@ -447,6 +456,7 @@ export class WorkspacesService {
       createdAt: invitation.createdAt.toISOString(),
       expiresAt: invitation.expiresAt.toISOString(),
       invitedBy: invitation.invitedBy,
+      acceptUrl,
     };
   }
 

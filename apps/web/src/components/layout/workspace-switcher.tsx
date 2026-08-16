@@ -25,6 +25,7 @@ export function WorkspaceSwitcher({ workspaceId }: { workspaceId: string }) {
         <Button
           variant="outline"
           className="h-auto w-full justify-start gap-2 bg-card px-2.5 py-2 text-left"
+          aria-label={`Switch workspace, currently ${current?.name ?? 'none selected'}`}
         >
           <span
             className="flex size-6 shrink-0 items-center justify-center rounded-md bg-primary text-[11px] font-bold text-primary-foreground"

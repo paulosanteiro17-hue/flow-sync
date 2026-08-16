@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { STATE, column } from './fixtures';
+import { column, gotoDemoWorkspace, STATE } from './fixtures';
 
 /**
  * Covers the destructive and administrative actions that were previously
@@ -10,8 +10,7 @@ test.describe('project and task management', () => {
   test.use({ storageState: STATE.emma });
 
   test('creates a task and then deletes it from the drawer', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page
       .getByRole('link', { name: /Q4 Product Launch/ })
@@ -42,8 +41,7 @@ test.describe('project and task management', () => {
   });
 
   test('adds a board to a project', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page
       .getByRole('link', { name: /Internal Platform/ })
@@ -66,8 +64,7 @@ test.describe('project and task management', () => {
   });
 
   test('the project page is reachable and shows boards and members', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page
       .getByRole('link', { name: /Website Redesign/ })
@@ -87,8 +84,7 @@ test.describe('project management permissions', () => {
   test.use({ storageState: STATE.guest });
 
   test('a guest sees no destructive project controls', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page
       .getByRole('link', { name: /Q4 Product Launch/ })

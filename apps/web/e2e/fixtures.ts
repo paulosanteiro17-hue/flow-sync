@@ -26,6 +26,43 @@ export async function signIn(page: Page, email: string, password = DEMO.password
   await page.waitForURL(/\/app(\/|$)/, { timeout: 20_000 });
 }
 
+export const DEMO_WORKSPACE = 'Northstar Labs';
+
+/**
+ * Lands in the seeded demo workspace.
+ *
+ * `/app` opens whichever workspace the user joined first, which stops being the
+ * demo one as soon as anybody creates another. Selecting it explicitly keeps the
+ * suite independent of whatever else happens to be in the database.
+ */
+export async function gotoDemoWorkspace(page: Page): Promise<void> {
+  await page.goto('/app');
+  await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+
+  // On a phone the switcher lives inside the navigation drawer, so it has to be
+  // opened first — and closed again, so the caller sees the layout it expects.
+  const menuButton = page.getByRole('button', { name: 'Open navigation' });
+  const isMobile = await menuButton.isVisible().catch(() => false);
+  if (isMobile) await menuButton.click();
+
+  const switcher = page.getByRole('button', { name: /^Switch workspace, currently/ });
+  await expect(switcher).toBeVisible({ timeout: 20_000 });
+
+  if (!(await switcher.getAttribute('aria-label'))?.includes(DEMO_WORKSPACE)) {
+    await switcher.click();
+    await page.getByRole('menuitem', { name: DEMO_WORKSPACE }).click();
+    await expect(
+      page.getByRole('button', { name: new RegExp(`currently ${DEMO_WORKSPACE}`) }),
+    ).toBeVisible({ timeout: 20_000 });
+  }
+
+  if (isMobile) {
+    const closeButton = page.getByRole('button', { name: 'Close navigation' });
+    if (await closeButton.isVisible().catch(() => false)) await closeButton.click();
+    await expect(page.getByRole('navigation', { name: 'Main' })).toBeHidden({ timeout: 10_000 });
+  }
+}
+
 /**
  * Opens an independent browser context for a saved session, so two users can be
  * driven side by side in one test — which is what the realtime specs need.
@@ -36,8 +73,7 @@ export async function openAs(
 ): Promise<{ page: Page; close: () => Promise<void> }> {
   const context = await browser.newContext({ storageState });
   const page = await context.newPage();
-  await page.goto('/app');
-  await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+  await gotoDemoWorkspace(page);
   return { page, close: () => context.close() };
 }
 

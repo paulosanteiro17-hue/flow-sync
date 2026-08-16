@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { STATE, cardByKey, column, signIn } from './fixtures';
+import { cardByKey, column, gotoDemoWorkspace, signIn, STATE } from './fixtures';
 
 test.describe('landing page', () => {
   test('presents the product and its entry points', async ({ page }) => {
@@ -65,8 +65,7 @@ test.describe('working in a board', () => {
   test.use({ storageState: STATE.emma });
 
   test('creates a task, edits it in the drawer and comments on it', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page
       .getByRole('link', { name: /Q4 Product Launch/ })
@@ -112,8 +111,7 @@ test.describe('working in a board', () => {
   });
 
   test('filters cards by priority and clears the filter', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page
       .getByRole('link', { name: /Website Redesign/ })
@@ -139,8 +137,7 @@ test.describe('working in a board', () => {
   });
 
   test('the command palette finds a task and opens it', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page.keyboard.press('Control+k');
     const input = page.getByPlaceholder('Search tasks, projects and people…');
@@ -155,8 +152,7 @@ test.describe('working in a board', () => {
   });
 
   test('the notification bell opens, and links to the full centre', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page.getByRole('button', { name: /Notifications/ }).click();
     await expect(page.getByRole('heading', { name: 'Notifications' })).toBeVisible();
@@ -167,8 +163,7 @@ test.describe('working in a board', () => {
   });
 
   test('the activity feed lists what happened', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page.getByRole('link', { name: 'Activity' }).click();
     await expect(page).toHaveURL(/\/activity/, { timeout: 20_000 });
@@ -184,8 +179,7 @@ test.describe('permissions', () => {
   test('a guest sees only their project, cannot create tasks, but can comment', async ({
     page,
   }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     // Both the sidebar and the dashboard link to a project, hence `.first()`.
     await expect(page.getByRole('link', { name: /Q4 Product Launch/ }).first()).toBeVisible({
@@ -218,8 +212,7 @@ test.describe('team management', () => {
   test.use({ storageState: STATE.emma });
 
   test('the owner sees the roster with roles', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page.getByRole('link', { name: 'Team' }).click();
     await expect(page).toHaveURL(/\/team/, { timeout: 20_000 });

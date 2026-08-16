@@ -20,6 +20,7 @@ import {
   updateMemberRoleSchema,
   updateWorkspaceSchema,
   type CreateInvitationInput,
+  type CreatedInvitation,
   type CreateLabelInput,
   type CreateWorkspaceInput,
   type InvitationView,
@@ -158,12 +159,16 @@ export class WorkspacesController {
   @Post(':workspaceId/invitations')
   @RequirePermissions('member:invite')
   @RateLimit({ limit: 30, windowMs: 60 * 60 * 1000, scope: 'workspace', name: 'workspace:invite' })
-  @ApiOperation({ summary: 'Invite someone by email' })
+  @ApiOperation({
+    summary: 'Invite someone by email',
+    description:
+      'The response carries the accept link. It is returned only here — the database stores just a hash of the token.',
+  })
   invite(
     @CurrentUser() user: AuthenticatedUser,
     @Param('workspaceId') workspaceId: string,
     @Body(zodBody(createInvitationSchema)) body: CreateInvitationInput,
-  ): Promise<InvitationView> {
+  ): Promise<CreatedInvitation> {
     return this.workspaces.invite(user.userId, workspaceId, body);
   }
 

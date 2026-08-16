@@ -7,9 +7,10 @@ import {
   assignableRoles,
   can,
   outranks,
+  type CreatedInvitation,
   type WorkspaceRole,
 } from '@flowsync/shared';
-import { Mail, MoreHorizontal, Trash2, UserPlus } from 'lucide-react';
+import { Check, Copy, Mail, MoreHorizontal, Trash2, UserPlus } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -317,29 +318,99 @@ function InviteDialog({
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<'ADMIN' | 'MEMBER' | 'GUEST'>('MEMBER');
   const [error, setError] = useState<string | null>(null);
+  const [created, setCreated] = useState<CreatedInvitation | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
     try {
-      await invite.mutateAsync({ email: email.trim().toLowerCase(), role });
-      toast.success('Invitation sent', {
-        description: 'In development the invitation link is printed to the API logs.',
-      });
+      const invitation = await invite.mutateAsync({ email: email.trim().toLowerCase(), role });
+      // The link is only ever returned here, so show it rather than closing.
+      setCreated(invitation);
+      setCopied(false);
       setEmail('');
-      onOpenChange(false);
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.message : 'The invitation could not be sent.');
     }
   };
 
+  const copyLink = async () => {
+    if (!created) return;
+    try {
+      await navigator.clipboard.writeText(created.acceptUrl);
+      setCopied(true);
+      toast.success('Invitation link copied');
+    } catch {
+      toast.error('Could not copy — select the link and copy it manually.');
+    }
+  };
+
+  const close = () => {
+    setCreated(null);
+    setError(null);
+    onOpenChange(false);
+  };
+
+  if (created) {
+    return (
+      <Dialog open={open} onOpenChange={(next) => !next && close()}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Invitation ready for {created.email}</DialogTitle>
+            <DialogDescription>
+              Send them this link. It works once, expires in seven days, and only that email address
+              can accept it.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2">
+            <Field label="Invitation link" htmlFor="invite-link">
+              <div className="flex gap-2">
+                <Input
+                  id="invite-link"
+                  readOnly
+                  value={created.acceptUrl}
+                  onFocus={(event) => event.currentTarget.select()}
+                  className="font-mono text-xs"
+                />
+                <Button type="button" variant="outline" onClick={copyLink}>
+                  {copied ? <Check /> : <Copy />}
+                  {copied ? 'Copied' : 'Copy'}
+                </Button>
+              </div>
+            </Field>
+
+            <p className="text-xs text-muted-foreground">
+              This build logs invitation emails to the console instead of sending them, so the link
+              is shown here. It cannot be retrieved later — only a hash of the token is stored.
+            </p>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setCreated(null);
+                setCopied(false);
+              }}
+            >
+              Invite someone else
+            </Button>
+            <Button onClick={close}>Done</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(next) => !next && close()}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Invite to the workspace</DialogTitle>
           <DialogDescription>
-            They receive a single-use link that expires in seven days.
+            You will get a single-use link to send them. It expires in seven days.
           </DialogDescription>
         </DialogHeader>
 
@@ -369,11 +440,11 @@ function InviteDialog({
           </Field>
 
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="ghost" onClick={close}>
               Cancel
             </Button>
             <Button type="submit" loading={invite.isPending} disabled={!email.trim()}>
-              Send invitation
+              Create invitation
             </Button>
           </DialogFooter>
         </form>

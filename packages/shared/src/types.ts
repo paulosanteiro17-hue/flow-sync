@@ -56,6 +56,18 @@ export interface InvitationView {
   invitedBy: UserSummary;
 }
 
+/**
+ * The response to creating an invitation, which additionally carries the accept
+ * link so the inviter can pass it on directly.
+ *
+ * It is deliberately absent from `InvitationView`: the database stores only a
+ * SHA-256 of the token, so the plaintext exists exactly once, in this response.
+ * Listing pending invitations can never reproduce it — and should not be able to.
+ */
+export interface CreatedInvitation extends InvitationView {
+  acceptUrl: string;
+}
+
 export interface LabelView {
   id: string;
   name: string;

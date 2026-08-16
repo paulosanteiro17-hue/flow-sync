@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { STATE, cardByKey, column } from './fixtures';
+import { cardByKey, column, gotoDemoWorkspace, STATE } from './fixtures';
 
 /**
  * Runs on the Pixel 7 profile. A Kanban board is the hardest thing to keep usable
@@ -10,8 +10,7 @@ test.describe('mobile', () => {
   test.use({ storageState: STATE.emma });
 
   test('the navigation is a drawer that opens and closes', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     // The sidebar is off-canvas until asked for.
     await expect(page.getByRole('button', { name: 'Open navigation' })).toBeVisible();
@@ -30,8 +29,7 @@ test.describe('mobile', () => {
   });
 
   test('the board is readable and scrolls horizontally', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page.getByRole('button', { name: 'Open navigation' }).click();
     await page
@@ -57,8 +55,7 @@ test.describe('mobile', () => {
   });
 
   test('a task opens in a full-height drawer', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForURL(/\/app\/.+/, { timeout: 30_000 });
+    await gotoDemoWorkspace(page);
 
     await page.getByRole('button', { name: 'Open navigation' }).click();
     await page

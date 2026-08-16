@@ -62,12 +62,13 @@ describe('role-based access control', () => {
 
   /** Invites a user and accepts on their behalf, which is the real join path. */
   async function joinAs(client: TestClient, email: string, role: string): Promise<void> {
-    await owner.post(`/workspaces/${workspaceId}/invitations`, { email, role }).expect(201);
+    const invitation = await owner
+      .post(`/workspaces/${workspaceId}/invitations`, { email, role })
+      .expect(201);
 
-    const { MailerService } = await import('../src/mailer/mailer.service');
-    const mailer = harness.app.get(MailerService);
-    const message = mailer.outbox().at(-1);
-    const token = /invite\/([\w-]+)/.exec(message?.text ?? '')?.[1];
+    // The accept link comes back in the response — the only place the plaintext
+    // token ever exists, since the database keeps just its hash.
+    const token = /invite\/([\w-]+)/.exec(invitation.body.acceptUrl ?? '')?.[1];
     if (!token) throw new Error(`No invitation link was produced for ${email}`);
 
     await client.post('/invitations/accept', { token }).expect(201);
@@ -245,17 +246,33 @@ describe('role-based access control', () => {
   });
 
   describe('invitations', () => {
+    it('returns the accept link once, and only on creation', async () => {
+      const created = await owner
+        .post(`/workspaces/${workspaceId}/invitations`, {
+          email: 'link-check@flowsync.test',
+          role: 'MEMBER',
+        })
+        .expect(201);
+
+      expect(created.body.acceptUrl).toMatch(/\/invite\/[\w-]+$/);
+
+      // Listing pending invitations must never reproduce it: the plaintext token
+      // is not stored, so there is nothing to leak later.
+      const pending = await owner.get(`/workspaces/${workspaceId}/invitations`).expect(200);
+      for (const invitation of pending.body) {
+        expect(invitation.acceptUrl).toBeUndefined();
+      }
+    });
+
     it('binds an invitation to the address it was sent to', async () => {
-      await owner
+      const created = await owner
         .post(`/workspaces/${workspaceId}/invitations`, {
           email: 'someone-else@flowsync.test',
           role: 'MEMBER',
         })
         .expect(201);
 
-      const { MailerService } = await import('../src/mailer/mailer.service');
-      const mailer = harness.app.get(MailerService);
-      const token = /invite\/([\w-]+)/.exec(mailer.outbox().at(-1)?.text ?? '')?.[1];
+      const token = /invite\/([\w-]+)/.exec(created.body.acceptUrl ?? '')?.[1];
 
       // A different signed-in account cannot consume it.
       const interloper = await harness.signUp('Interloper', 'interloper@flowsync.test');

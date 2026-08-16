@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
+  CreatedInvitation,
   CreateInvitationInput,
   CreateWorkspaceInput,
   InvitationView,
@@ -94,8 +95,10 @@ export function useInvitations(workspaceId: string, enabled = true) {
 export function useInviteMember(workspaceId: string) {
   const queryClient = useQueryClient();
   return useMutation({
+    // The response carries `acceptUrl`, which exists nowhere else — the server
+    // stores only a hash of the token — so the caller must surface it immediately.
     mutationFn: (input: CreateInvitationInput) =>
-      api.post<InvitationView>(`/workspaces/${workspaceId}/invitations`, input),
+      api.post<CreatedInvitation>(`/workspaces/${workspaceId}/invitations`, input),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: queryKeys.invitations(workspaceId) }),
   });
