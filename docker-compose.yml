@@ -60,6 +60,7 @@ services:
       STORAGE_LOCAL_DIR: /app/var/uploads
       LOG_LEVEL: ${LOG_LEVEL:-info}
       DEMO_ENABLED: ${DEMO_ENABLED:-true}
+      API_DOCS_ENABLED: ${API_DOCS_ENABLED:-true}
     ports:
       - '${API_PORT:-4000}:4000'
     volumes:

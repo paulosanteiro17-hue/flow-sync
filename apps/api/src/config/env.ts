@@ -50,6 +50,13 @@ const envSchema = z
       .default(10 * 1024 * 1024),
 
     RATE_LIMIT_ENABLED: booleanish.default(true),
+
+    /**
+     * Serves the OpenAPI explorer at `/api/docs`. Off in production unless asked
+     * for: whether to publish your API surface is a deployment decision, and a
+     * portfolio deployment wants it on while a real one usually does not.
+     */
+    API_DOCS_ENABLED: booleanish.optional(),
     LOG_LEVEL: z
       .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
       .default('info'),
@@ -117,6 +124,8 @@ export interface AppConfig extends Omit<RawEnv, 'WEB_ORIGIN'> {
   webOrigins: string[];
   isProduction: boolean;
   isTest: boolean;
+  /** Resolved from `API_DOCS_ENABLED`, defaulting to "anything but production". */
+  docsEnabled: boolean;
 }
 
 export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppConfig {
@@ -137,6 +146,7 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppConfig {
       .filter(Boolean),
     isProduction: env.NODE_ENV === 'production',
     isTest: env.NODE_ENV === 'test',
+    docsEnabled: env.API_DOCS_ENABLED ?? env.NODE_ENV !== 'production',
   };
 }
 

@@ -73,7 +73,7 @@ async function bootstrap(): Promise<void> {
 
   app.enableShutdownHooks();
 
-  if (!config.isProduction) {
+  if (config.docsEnabled) {
     const openApi = new DocumentBuilder()
       .setTitle('FlowSync API')
       .setDescription(
@@ -85,6 +85,7 @@ async function bootstrap(): Promise<void> {
       .build();
     SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, openApi), {
       swaggerOptions: { persistAuthorization: true },
+      customSiteTitle: 'FlowSync API',
     });
   }
 
