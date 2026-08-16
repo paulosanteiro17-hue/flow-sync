@@ -1,0 +1,212 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/*
+ * FlowSync design tokens.
+ *
+ * Typography deliberately uses the platform font stack rather than a webfont:
+ * it removes a network dependency from `next build` (which matters in Docker and
+ * CI), removes a render-blocking request, and reads correctly on every OS.
+ */
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.625rem;
+
+  --background: oklch(0.995 0 0);
+  --foreground: oklch(0.21 0.02 265);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.02 265);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.02 265);
+
+  --primary: oklch(0.56 0.19 275);
+  --primary-foreground: oklch(0.99 0 0);
+
+  --secondary: oklch(0.97 0.004 265);
+  --secondary-foreground: oklch(0.28 0.02 265);
+
+  --muted: oklch(0.97 0.004 265);
+  --muted-foreground: oklch(0.53 0.017 265);
+
+  --accent: oklch(0.96 0.012 275);
+  --accent-foreground: oklch(0.32 0.04 275);
+
+  --destructive: oklch(0.58 0.21 27);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  --success: oklch(0.65 0.16 150);
+  --warning: oklch(0.75 0.15 75);
+
+  --border: oklch(0.92 0.005 265);
+  --input: oklch(0.92 0.005 265);
+  --ring: oklch(0.56 0.19 275);
+
+  --surface: oklch(0.975 0.003 265);
+  --surface-raised: oklch(1 0 0);
+
+  --priority-urgent: oklch(0.58 0.21 27);
+  --priority-high: oklch(0.68 0.17 45);
+  --priority-medium: oklch(0.75 0.14 85);
+  --priority-low: oklch(0.65 0.1 230);
+  --priority-none: oklch(0.7 0.012 265);
+}
+
+.dark {
+  --background: oklch(0.17 0.011 265);
+  --foreground: oklch(0.95 0.005 265);
+
+  --card: oklch(0.21 0.013 265);
+  --card-foreground: oklch(0.95 0.005 265);
+
+  --popover: oklch(0.22 0.014 265);
+  --popover-foreground: oklch(0.95 0.005 265);
+
+  --primary: oklch(0.66 0.17 275);
+  --primary-foreground: oklch(0.16 0.02 275);
+
+  --secondary: oklch(0.26 0.015 265);
+  --secondary-foreground: oklch(0.93 0.005 265);
+
+  --muted: oklch(0.25 0.014 265);
+  --muted-foreground: oklch(0.68 0.014 265);
+
+  --accent: oklch(0.28 0.03 275);
+  --accent-foreground: oklch(0.93 0.01 275);
+
+  --destructive: oklch(0.63 0.19 25);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --success: oklch(0.7 0.15 150);
+  --warning: oklch(0.78 0.14 75);
+
+  --border: oklch(0.29 0.014 265);
+  --input: oklch(0.31 0.015 265);
+  --ring: oklch(0.66 0.17 275);
+
+  --surface: oklch(0.15 0.01 265);
+  --surface-raised: oklch(0.23 0.014 265);
+
+  --priority-urgent: oklch(0.66 0.19 25);
+  --priority-high: oklch(0.74 0.15 45);
+  --priority-medium: oklch(0.8 0.13 85);
+  --priority-low: oklch(0.7 0.1 230);
+  --priority-none: oklch(0.55 0.012 265);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* Visible, consistent focus for keyboard users on every interactive element. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklch, var(--primary) 25%, transparent);
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--foreground) 20%, transparent) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklch, var(--foreground) 18%, transparent);
+    border-radius: 999px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Subtle grid used behind the landing hero. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--foreground) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--foreground) 6%, transparent) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+}
+
+/* Respect the user's motion preference everywhere, including dnd-kit transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

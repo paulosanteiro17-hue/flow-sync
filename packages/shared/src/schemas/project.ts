@@ -42,6 +42,12 @@ export const listProjectsQuerySchema = z.object({
   includeArchived: z.coerce.boolean().default(false),
 });
 
+/**
+ * Schemas with defaults have a different input and output shape. Forms bind to
+ * the input type (fields may be absent) while services receive the output type
+ * (defaults applied), so both are exported.
+ */
+export type CreateProjectFormInput = z.input<typeof createProjectSchema>;
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 export type UpdateProjectInput = z.infer<typeof updateProjectSchema>;
 export type ListProjectsQuery = z.infer<typeof listProjectsQuerySchema>;

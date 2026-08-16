@@ -144,9 +144,11 @@ const ackDaniel = await daniel.subscribe('board', boardId);
 check('emma subscribed to the board room', ackEmma?.room === `board:${boardId}`, ackEmma);
 check('daniel subscribed to the board room', ackDaniel?.room === `board:${boardId}`, ackDaniel);
 
-const todo = snapshot.columns.find((c) => c.name === 'To Do');
-const inProgress = snapshot.columns.find((c) => c.name === 'In Progress');
-const movable = snapshot.tasks.find((t) => t.columnId === todo.id);
+// Pick whatever is on the board rather than a fixed column, so the script stays
+// runnable after a previous run has already shuffled things around.
+const movable = snapshot.tasks[0];
+const todo = snapshot.columns.find((c) => c.id === movable.columnId);
+const inProgress = snapshot.columns.find((c) => c.id !== movable.columnId);
 
 const danielMoved = daniel.waitFor('task.moved');
 const emmaEchoCount = emma.events.length;
