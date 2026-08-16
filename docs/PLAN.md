@@ -1,4 +1,4 @@
-# FlowSync — Delivery Plan
+﻿# FlowSync — Delivery Plan
 
 > Living document. Updated at the end of every phase.
 > Status legend: `TODO` · `IN PROGRESS` · `DONE`
@@ -27,45 +27,96 @@ Hierarchy: `Workspace → Project → Board → BoardColumn → Task → (Subtas
 Status is updated at the end of each phase and reflects what has actually been run,
 not what has been written.
 
-| #   | Phase                    | Status      | Exit criteria (what "done" means)                                                       |
-| --- | ------------------------ | ----------- | --------------------------------------------------------------------------------------- |
-| 1   | Planning & Architecture  | DONE        | `PLAN.md`, `ARCHITECTURE.md`, `DECISIONS.md`, `SECURITY.md` written; stack locked       |
-| 2   | Repository setup         | DONE        | npm workspaces monorepo, TS strict, ESLint/Prettier, shared package, all builds green   |
-| 3   | Database                 | DONE        | Prisma schema + migration + seed for `Northstar Labs`; indexes and constraints in place |
-| 4   | Authentication           | DONE        | Sign up / in / out, httpOnly cookie sessions, refresh rotation, CSRF, rate limits       |
-| 5   | Workspace & membership   | DONE (API)  | Workspace CRUD, RBAC guard chain, invitations, tenant isolation verified                |
-| 6   | Projects                 | DONE (API)  | Project CRUD, members, statuses, prefix, archive                                        |
-| 7   | Boards & columns         | DONE (API)  | Board/column CRUD, reorder, defaults on project creation, board snapshot                |
-| 8   | Tasks                    | DONE (API)  | Task CRUD, readable IDs, priority, labels, due dates, assignees, subtasks               |
-| 9   | Drag-and-drop            | IN PROGRESS | Server-side ranking done and verified under concurrency; dnd-kit board pending          |
-| 10  | WebSockets               | DONE (API)  | Socket.IO gateway, handshake auth middleware, room authorization, Redis adapter         |
-| 11  | Real-time board          | IN PROGRESS | Server events done; client apply/dedupe/resync pending                                  |
-| 12  | Task details             | IN PROGRESS | API complete; task drawer pending                                                       |
-| 13  | Comments                 | DONE (API)  | Comments CRUD + server-resolved @mentions, live events                                  |
-| 14  | Activity                 | DONE (API)  | Activity recorded for all mutations, cursor-paginated feed                              |
-| 15  | Notifications            | DONE (API)  | Fan-out with preferences, live delivery, read/read-all, deep links                      |
-| 16  | Team & RBAC              | DONE (API)  | Roles, hashed invitation tokens, last-owner invariant                                   |
-| 17  | Search & command palette | IN PROGRESS | Search endpoint done; ⌘K palette pending                                                |
-| 18  | Attachments              | DONE (API)  | Storage abstraction, validated uploads, local + S3 drivers                              |
-| 19  | Responsive UI            | TODO        | Mobile board, tablet layouts, light/dark/system themes, a11y pass                       |
-| 20  | Testing                  | TODO        | Backend Jest+Supertest, frontend Vitest+RTL, Playwright E2E incl. two-user realtime     |
-| 21  | Security review          | TODO        | `SECURITY.md` checklist executed, findings fixed                                        |
-| 22  | Performance review       | TODO        | N+1 audit, query counts, large-board behaviour documented                               |
-| 23  | Docker                   | IN PROGRESS | Postgres and Redis running; api/web images pending                                      |
-| 24  | CI/CD                    | TODO        | GitHub Actions: install, lint, typecheck, unit, build, E2E                              |
-| 25  | Deployment               | TODO        | Vendor-neutral deploy guide + production env matrix                                     |
-| 26  | Documentation            | TODO        | README + architecture/security/decisions docs finalised                                 |
-| 27  | Portfolio                | TODO        | `PORTFOLIO.md` with Upwork-ready copy and demo script                                   |
+| #   | Phase                    | Status     | Exit criteria (what "done" means)                                                       |
+| --- | ------------------------ | ---------- | --------------------------------------------------------------------------------------- |
+| 1   | Planning & Architecture  | DONE       | `PLAN.md`, `ARCHITECTURE.md`, `DECISIONS.md`, `SECURITY.md` written; stack locked       |
+| 2   | Repository setup         | DONE       | npm workspaces monorepo, TS strict, ESLint/Prettier, shared package, all builds green   |
+| 3   | Database                 | DONE       | Prisma schema + migration + seed for `Northstar Labs`; indexes and constraints in place |
+| 4   | Authentication           | DONE       | Sign up / in / out, httpOnly cookie sessions, refresh rotation, CSRF, rate limits       |
+| 5   | Workspace & membership   | DONE (API) | Workspace CRUD, RBAC guard chain, invitations, tenant isolation verified                |
+| 6   | Projects                 | DONE (API) | Project CRUD, members, statuses, prefix, archive                                        |
+| 7   | Boards & columns         | DONE (API) | Board/column CRUD, reorder, defaults on project creation, board snapshot                |
+| 8   | Tasks                    | DONE (API) | Task CRUD, readable IDs, priority, labels, due dates, assignees, subtasks               |
+| 9   | Drag-and-drop            | DONE       | dnd-kit board, fractional ranking persisted, optimistic move with rollback              |
+| 10  | WebSockets               | DONE       | Socket.IO gateway, handshake auth middleware, room authorization, Redis adapter         |
+| 11  | Real-time board          | DONE       | Live events applied to the query cache, gap detection, dedupe, resync on reconnect      |
+| 12  | Task details             | DONE       | Drawer with every field, inline editing, subtasks, attachments, live comments           |
+| 13  | Comments                 | DONE       | Comments CRUD + server-resolved @mentions, live updates                                 |
+| 14  | Activity                 | DONE       | Activity recorded for all mutations, cursor-paginated feed grouped by day               |
+| 15  | Notifications            | DONE       | Fan-out with preferences, live delivery, read/read-all, deep links                      |
+| 16  | Team & RBAC              | DONE       | Team page, hashed invitation tokens, role management, last-owner invariant              |
+| 17  | Search & command palette | DONE       | Cross-entity search endpoint and the Ctrl/Cmd+K palette                                 |
+| 18  | Attachments              | DONE       | Storage abstraction, validated uploads, local + S3 drivers                              |
+| 19  | Responsive UI            | DONE       | Mobile drawer and board, light/dark/system themes, accessibility pass with mobile E2E   |
+| 20  | Testing                  | DONE       | 146 unit/integration + 21 Playwright tests, all executed                                |
+| 21  | Security review          | DONE       | `SECURITY.md` checklist executed; findings and fixes logged there                       |
+| 22  | Performance review       | DONE       | N+1 audit, query-count reductions, large-board behaviour documented below               |
+| 23  | Docker                   | DONE       | `docker compose up` boots web+api+postgres+redis; `--profile seed` populates the demo   |
+| 24  | CI/CD                    | DONE       | GitHub Actions: lint, format, types, unit, integration, build, E2E, audit, images       |
+| 25  | Deployment               | DONE       | `docs/DEPLOYMENT.md`: three vendor-neutral options plus the production env matrix       |
+| 26  | Documentation            | DONE       | README plus architecture, security, decisions and deployment docs                       |
+| 27  | Portfolio                | DONE       | `docs/PORTFOLIO.md` with the case study, skills list and demo script                    |
 
-### Verified so far
+## 4. Verification record
 
-Run against a live API with Postgres and Redis (`scripts/smoke/core.mjs`), 37 checks
-covering: the two-user realtime move, echo suppression, live comments and mention
-notifications, the RBAC matrix per role, tenant isolation across nine endpoints plus
-socket subscriptions, and concurrent drops onto the same slot producing distinct ranks.
-These are exploratory checks; the committed Jest/Vitest/Playwright suites land in phase 20.
+Everything below was executed, not assumed. The commands are in the README.
 
-## 4. Risk register
+| Check                                         | Result                                                           |
+| --------------------------------------------- | ---------------------------------------------------------------- |
+| `npm run lint`                                | Clean (0 errors)                                                 |
+| `npm run format:check`                        | Clean                                                            |
+| `npm run typecheck`                           | Clean across all three workspaces                                |
+| `npm run test:shared`                         | 39 passed                                                        |
+| `npm run test:web`                            | 32 passed                                                        |
+| `npm run test:api`                            | 75 passed across 6 suites, against a real Postgres               |
+| `npm run test:e2e`                            | 21 passed (18 desktop + 3 mobile)                                |
+| `npm run build`                               | All three workspaces build                                       |
+| `docker compose up -d --build`                | postgres, redis, api and web all healthy                         |
+| `docker compose --profile seed run --rm seed` | Demo workspace created                                           |
+| `GET /health/ready`                           | `{"status":"ok","database":true,"redis":true}`                   |
+| Two-browser realtime                          | A card moved by user A appears for user B, and survives a reload |
+
+`scripts/smoke/core.mjs` (37 exploratory checks against a live stack) is kept in the
+repository as the script used while building the backend.
+
+## 5. Bugs the tests found, and the fixes
+
+Recorded because they are the reason the suites exist.
+
+1. **WebSocket handshake race.** Authenticating in `handleConnection` let a fast client
+   emit `subscribe` before its identity was resolved. Moved into handshake middleware.
+2. **Concurrent rank collisions.** Ranks were resolved before the transaction
+   serialised, so parallel moves computed the same position and one aborted. The retry
+   now wraps the whole transaction and re-reads the current neighbour each attempt.
+3. **Concurrent task creation.** The same shape; fixed by taking the project row lock
+   first, which serialises creates as a side effect of minting the readable key.
+4. **Empty `dist` on rebuild.** `deleteOutDir` wiped the output while the incremental
+   `.tsbuildinfo` survived outside it, so TypeScript skipped emitting and the build
+   "succeeded" with nothing in it. The cache now lives inside `dist`.
+5. **Docker boot refusal.** Production required secure cookies even over plain HTTP on
+   localhost; the rule now keys off an HTTPS origin rather than `NODE_ENV`.
+6. **Off-canvas drawer still reachable.** The mobile sidebar was moved with `translate`
+   alone, leaving it in the accessibility tree and the tab order.
+7. **Duplicate accessible name.** The drawer backdrop and its close button both
+   announced "Close navigation". The backdrop is now decorative, with Escape to close.
+8. **Rank validation gap.** `rankBetween` only inspected characters up to the first
+   difference, so an invalid character further right slipped through.
+
+## 6. Performance notes
+
+- **Board load** is two queries plus one grouped query for completed-subtask counts,
+  regardless of task count. The naive version was one query per task: on a 300-task
+  board, 300 round trips replaced by one.
+- **Realtime events** patch the client cache directly. Twenty events cost twenty
+  in-memory writes and zero requests; invalidating instead would cost twenty refetches.
+- **Moves** are a single row update and a small payload, independent of board size,
+  because of fractional ranking.
+- **Card rendering** is memoised, so one card moving does not re-render the board.
+- **Indexes** cover every tenant-scoped access path, and the two unbounded feeds
+  (activity and notifications) are cursor-paginated over indexed columns.
+- **Presence** broadcasts are coalesced to at most one per room per second.
+
+## 7. Risk register
 
 | Risk                                          | Impact                           | Mitigation                                                                                                                              |
 | --------------------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
@@ -77,7 +128,7 @@ These are exploratory checks; the committed Jest/Vitest/Playwright suites land i
 | Windows dev environment without Docker daemon | Cannot run integration tests     | Tests target a `DATABASE_URL` that can point at Docker **or** a local Postgres; compose file is not a hard dependency of the test suite |
 | Scope creep (50-section spec)                 | Nothing finished well            | Phase gates above; a phase is not left until its core works                                                                             |
 
-## 5. Working agreement
+## 8. Working agreement
 
 - One logical commit per completed phase, repository always in a runnable state.
 - No `TODO`, "Coming soon", dead routes or non-functional buttons in the final product.

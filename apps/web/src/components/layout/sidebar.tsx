@@ -3,7 +3,7 @@
 import { Activity, CheckSquare, LayoutDashboard, Plus, Settings, Users, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Wordmark } from '@/components/brand';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/misc';
@@ -23,6 +23,16 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
   const setMobileNavOpen = useUiStore((state) => state.setMobileNavOpen);
   const [createOpen, setCreateOpen] = useState(false);
 
+  // Escape closes the drawer, matching every other overlay in the app.
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileNavOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [mobileNavOpen, setMobileNavOpen]);
+
   const links = [
     { href: `/app/${workspaceId}`, label: 'Dashboard', icon: LayoutDashboard, exact: true },
     { href: `/app/${workspaceId}/my-tasks`, label: 'My Tasks', icon: CheckSquare },
@@ -36,12 +46,16 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
 
   return (
     <>
-      {/* Backdrop for the mobile drawer. */}
+      {/*
+        Backdrop for the mobile drawer. Deliberately not a button: the header
+        already exposes a "Close navigation" control, and a second element with
+        the same accessible name is noise for screen-reader users. Pointer users
+        get click-to-dismiss, keyboard users get Escape.
+      */}
       {mobileNavOpen ? (
-        <button
-          type="button"
+        <div
+          aria-hidden
           className="fixed inset-0 z-30 bg-black/40 lg:hidden"
-          aria-label="Close navigation"
           onClick={() => setMobileNavOpen(false)}
         />
       ) : null}
@@ -49,7 +63,11 @@ export function Sidebar({ workspaceId }: { workspaceId: string }) {
       <aside
         className={cn(
           'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-border bg-surface transition-transform lg:static lg:translate-x-0',
-          mobileNavOpen ? 'translate-x-0' : '-translate-x-full',
+          // `invisible` matters as much as the transform: a drawer moved off-canvas
+          // with `translate` alone is still in the accessibility tree and still
+          // reachable by Tab. Visibility removes it from both, and the `lg:` variant
+          // brings it back on desktop where the sidebar is permanent.
+          mobileNavOpen ? 'translate-x-0' : 'invisible -translate-x-full lg:visible',
         )}
       >
         <div className="flex h-14 items-center gap-2 px-4">

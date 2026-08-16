@@ -143,6 +143,37 @@ authenticated routes.
 
 ## 12. Review log
 
-| Date                          | Finding | Severity | Resolution |
-| ----------------------------- | ------- | -------- | ---------- |
-| _(populated during Phase 21)_ |         |          |            |
+Phase 21 walked every section above against the running system. Findings and their
+resolutions:
+
+| #   | Finding                                                                                                                                                                                                                                                              | Severity   | Resolution                                                                                                                                           |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | WebSocket authentication ran in `handleConnection`, which is async. Socket.IO completes the client's `connect` event as soon as the handshake succeeds, so a fast client could emit `subscribe` before its identity was resolved and be rejected as unauthenticated. | High       | Authentication moved into handshake middleware; nothing reaches a message handler until `next()` has been called. Covered by `realtime.e2e-spec.ts`. |
+| 2   | `docker compose up` refused to boot because `NODE_ENV=production` demanded `COOKIE_SECURE`, which is wrong for a local stack over plain HTTP — the kind of friction that gets a control disabled wholesale.                                                          | Medium     | The requirement keys off an `https://` origin in `WEB_ORIGIN`, so a real TLS deployment still cannot ship insecure cookies while localhost works.    |
+| 3   | The mobile navigation drawer was moved off-canvas with `translate` alone, leaving its links in the accessibility tree and the tab order while invisible to sighted users.                                                                                            | Low (a11y) | The drawer is `invisible` below the `lg` breakpoint. Asserted in `mobile.spec.ts`.                                                                   |
+| 4   | The drawer backdrop and its close button shared the accessible name "Close navigation".                                                                                                                                                                              | Low (a11y) | The backdrop is decorative (`aria-hidden`); Escape closes the drawer for keyboard users.                                                             |
+| 5   | `rankBetween` validated rank characters lazily, so an invalid character after the first differing position was never inspected. Not reachable from user input, but it weakened an invariant the ordering depends on.                                                 | Low        | Inputs are validated up front. Covered in `packages/shared/src/rank.test.ts`.                                                                        |
+
+Checks that passed with no change required:
+
+- Sign-in answers identically for a wrong password and an unknown account, and spends
+  the same time on both (`auth.e2e-spec.ts`).
+- Refresh-token replay revokes the whole family, so a stolen cookie cannot be reused.
+- Every cross-tenant read and mutation returns `404`, including through search and
+  socket subscriptions (`tenant-isolation.e2e-spec.ts`: 15 read endpoints plus all writes).
+- No route trusts a client-supplied `workspaceId`, `role`, `creatorId`, `key` or `rank`.
+- The only raw SQL in the codebase is the test-only `TRUNCATE`, which refuses to run
+  outside `NODE_ENV=test`.
+- No `dangerouslySetInnerHTML` anywhere; comment bodies are stored and rendered as text.
+- Error responses carry a request id and no stack traces or ORM internals.
+- `npm audit --omit=dev --audit-level=high` reports no advisories, and runs in CI.
+
+Known and accepted limitations, documented rather than hidden:
+
+- Email uses a console transport in this build. Invitation and reset links are printed
+  to the API log — correct for a portfolio deployment, and a provider implementation
+  rather than a refactor in production.
+- Simultaneous editing of a long task description is last-write-wins. Doing better needs
+  CRDT/OT and is listed as a non-goal in `PLAN.md`.
+- Rate-limit buckets are per instance unless Redis is enabled. `REDIS_ENABLED=true` is
+  required for any multi-instance deployment and is called out in `docs/DEPLOYMENT.md`.
