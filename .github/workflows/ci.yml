@@ -151,7 +151,6 @@ jobs:
           --health-retries 10
 
     env:
-      NODE_ENV: production
       DATABASE_URL: postgresql://flowsync:flowsync@localhost:5432/flowsync?schema=public
       JWT_SECRET: ci-secret-that-is-long-enough-for-production-checks
       REDIS_ENABLED: 'true'
@@ -187,6 +186,8 @@ jobs:
 
       - name: Run end-to-end tests
         run: npm run test:e2e
+        env:
+          NODE_ENV: production
 
       - uses: actions/upload-artifact@v4
         if: failure()
