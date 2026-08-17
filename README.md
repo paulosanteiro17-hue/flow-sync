@@ -3,7 +3,7 @@
 **Real-time collaborative project management.** Move a card once and everyone on the
 board sees it immediately — no refresh and no polling.
 
-![FlowSync landing page and board preview](docs/images/flowsync-overview.png)
+![FlowSync landing page and board preview](https://github.com/paulosanteiro17-hue/flow-sync/releases/download/v1.0.0/flowsync-overview.png)
 
 FlowSync is a multi-tenant SaaS portfolio project built around live collaboration,
 secure workspace isolation and a polished kanban workflow. The demo workspace comes
@@ -24,7 +24,7 @@ populated with projects, people and tasks so the product can be explored immedia
 
 ## Product
 
-![FlowSync kanban board](docs/images/flowsync-board.png)
+![FlowSync kanban board](https://github.com/paulosanteiro17-hue/flow-sync/releases/download/v1.0.0/flowsync-board.png)
 
 The seeded **Northstar Labs** workspace includes four projects and 24 tasks. Open the
 same board in two browser windows and move a card to see the real-time flow in action.
