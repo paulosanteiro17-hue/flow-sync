@@ -15,7 +15,7 @@ flowchart LR
   end
 
   subgraph Edge
-    W["apps/web<br/>Next.js 15 · RSC + Client Components"]
+    W["apps/web<br/>Next.js 16 · RSC + Client Components"]
   end
 
   subgraph Server

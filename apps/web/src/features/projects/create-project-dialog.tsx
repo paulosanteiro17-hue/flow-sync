@@ -12,7 +12,7 @@ import {
 } from '@flowsync/shared';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { ApiError } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
@@ -49,7 +49,7 @@ export function CreateProjectDialog({ workspaceId, open, onOpenChange }: CreateP
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     setError,
     reset,
@@ -67,9 +67,9 @@ export function CreateProjectDialog({ workspaceId, open, onOpenChange }: CreateP
     },
   });
 
-  const name = watch('name');
-  const color = watch('color');
-  const keyValue = watch('key');
+  const name = useWatch({ control, name: 'name' });
+  const color = useWatch({ control, name: 'color' });
+  const keyValue = useWatch({ control, name: 'key' });
 
   // Suggest a key from the name until the user types their own.
   useEffect(() => {

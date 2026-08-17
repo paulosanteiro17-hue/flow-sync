@@ -146,7 +146,9 @@ export class RealtimeClient {
   /** Adopts the sequence a REST snapshot was taken at, so the next event lines up. */
   adoptSequence(scope: RoomScope, id: string, seq: number): void {
     const state = this.rooms.get(`${scope}:${id}`);
-    if (state) state.lastSeq = seq;
+    // A subscribe acknowledgement or an event may have advanced the stream while
+    // the snapshot request was in flight. Never let a late snapshot rewind it.
+    if (state) state.lastSeq = Math.max(state.lastSeq, seq);
   }
 
   onEvent(handler: EventHandler): () => void {
@@ -181,8 +183,18 @@ export class RealtimeClient {
     });
 
     if (ack && 'seq' in ack) {
-      const state = this.rooms.get(`${scope}:${id}`);
-      if (state) state.lastSeq = ack.seq;
+      const room = `${scope}:${id}`;
+      const state = this.rooms.get(room);
+      if (!state) return;
+
+      // The snapshot and the room subscription start independently. If the
+      // server is already ahead when the acknowledgement arrives, an event may
+      // have landed after the snapshot but before this socket joined the room.
+      // Refetching closes that window; taking the maximum also prevents a late
+      // acknowledgement from rewinding events already received by the client.
+      const mayHaveMissedEvents = ack.seq > state.lastSeq;
+      state.lastSeq = Math.max(state.lastSeq, ack.seq);
+      if (mayHaveMissedEvents) this.emitResync(room);
     }
   }
 

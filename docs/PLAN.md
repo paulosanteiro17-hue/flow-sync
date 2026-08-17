@@ -67,9 +67,9 @@ Everything below was executed, not assumed. The commands are in the README.
 | `npm run format:check`                        | Clean                                                            |
 | `npm run typecheck`                           | Clean across all three workspaces                                |
 | `npm run test:shared`                         | 39 passed                                                        |
-| `npm run test:web`                            | 32 passed                                                        |
-| `npm run test:api`                            | 75 passed across 6 suites, against a real Postgres               |
-| `npm run test:e2e`                            | 21 passed (18 desktop + 3 mobile)                                |
+| `npm run test:web`                            | 34 passed                                                        |
+| `npm run test:api`                            | 76 passed across 6 suites, against a real Postgres               |
+| `npm run test:e2e`                            | 28 passed (including setup, desktop and mobile projects)         |
 | `npm run build`                               | All three workspaces build                                       |
 | `docker compose up -d --build`                | postgres, redis, api and web all healthy                         |
 | `docker compose --profile seed run --rm seed` | Demo workspace created                                           |

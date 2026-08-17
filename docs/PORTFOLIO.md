@@ -181,7 +181,7 @@ of a different workspace, and treats any response that is not `404` as a leak.
 
 ## Technologies
 
-**Frontend:** Next.js 15, React 19, TypeScript, Tailwind CSS 4, Radix UI, TanStack
+**Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS 4, Radix UI, TanStack
 Query, dnd-kit, React Hook Form, Zod, Zustand, date-fns, Socket.IO client
 
 **Backend:** Node.js, NestJS 11, TypeScript, REST, Socket.IO, Prisma 6, Zod, Argon2id,

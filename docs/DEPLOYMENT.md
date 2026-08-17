@@ -123,7 +123,7 @@ the API so sockets are not dropped by scale-to-zero.
 Cheapest, and closest to the local setup.
 
 ```bash
-git clone <repository-url> /opt/flowsync && cd /opt/flowsync
+git clone https://github.com/paulosanteiro17-hue/flow-sync.git /opt/flowsync && cd /opt/flowsync
 cp .env.example .env      # set JWT_SECRET, API_URL, WEB_ORIGIN to your domains
 docker compose up -d --build
 docker compose --profile seed run --rm seed

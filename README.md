@@ -20,19 +20,14 @@ It is a portfolio project, built to production standards rather than tutorial
 standards: the interesting parts are the realtime protocol, the tenant isolation,
 the ordering algorithm and the test suites that hold them in place.
 
-## Live demo
+## Demo workspace
 
-Open the deployed app and click **Explore the demo workspace** — one click signs you
-in to a fully populated workspace (Northstar Labs: 6 people, 4 projects, 24 tasks)
-with no form to fill in.
+Run the app locally and click **Explore the demo workspace** — one click signs you in
+to a fully populated workspace (Northstar Labs: 6 people, 4 projects, 24 tasks) with
+no form to fill in. A hosted deployment is not currently available.
 
 > To see the point of the project: open the demo in two browser windows, put the same
 > board side by side, and drag a card in one. It moves in the other.
-
-|          |                                                       |
-| -------- | ----------------------------------------------------- |
-| Web      | `<deployment URL>`                                    |
-| API docs | `<api URL>/api/docs` (OpenAPI, non-production builds) |
 
 Demo accounts (password `DemoFlow2024!`):
 
@@ -45,21 +40,6 @@ Demo accounts (password `DemoFlow2024!`):
 
 Signing in as different roles is the fastest way to see the permission model: the
 guest only sees one project and has no task-creation controls at all.
-
-## Screenshots
-
-|                     |                                        |
-| ------------------- | -------------------------------------- |
-| Landing page        | `docs/screenshots/landing.png`         |
-| Dashboard           | `docs/screenshots/dashboard.png`       |
-| Kanban board        | `docs/screenshots/board.png`           |
-| Task details        | `docs/screenshots/task.png`            |
-| Two-user realtime   | `docs/screenshots/realtime.png`        |
-| Activity feed       | `docs/screenshots/activity.png`        |
-| Notification center | `docs/screenshots/notifications.png`   |
-| Team & roles        | `docs/screenshots/team.png`            |
-| Command palette     | `docs/screenshots/command-palette.png` |
-| Mobile board        | `docs/screenshots/mobile.png`          |
 
 ## Features
 
@@ -99,7 +79,7 @@ guest only sees one project and has no task-creation controls at all.
 
 | Layer              | Choice                                        | Why                                                                    |
 | ------------------ | --------------------------------------------- | ---------------------------------------------------------------------- |
-| Web                | Next.js 15 (App Router), React 19, TypeScript | Static marketing pages, client-rendered realtime app                   |
+| Web                | Next.js 16 (App Router), React 19, TypeScript | Static marketing pages, client-rendered realtime app                   |
 | Styling            | Tailwind CSS 4, Radix primitives              | Design tokens in CSS, accessible behaviour without a component vendor  |
 | Client state       | TanStack Query, Zustand                       | Query owns server state; Zustand only holds UI state                   |
 | Drag & drop        | dnd-kit                                       | Pointer _and_ keyboard sensors, accessible announcements               |
@@ -206,7 +186,7 @@ endpoints and every mutation as a member of a different workspace.
 ### Quick start
 
 ```bash
-git clone <repository-url> flowsync
+git clone https://github.com/paulosanteiro17-hue/flow-sync.git flowsync
 cd flowsync
 npm install
 
@@ -273,9 +253,9 @@ npm run db:test:setup --workspace @flowsync/api
 | Suite                         | Count | What it covers                                                                                                                                                                            |
 | ----------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `packages/shared` (Vitest)    | 39    | Ranking invariants under 500 same-gap and 300 random insertions, permission matrix, mention parsing, activity messages                                                                    |
-| `apps/web` (Vitest + RTL)     | 32    | Board cache reducers, drop-neighbour resolution, optimistic move, filter combinations, task card behaviour and accessibility                                                              |
-| `apps/api` (Jest + Supertest) | 75    | Auth, CSRF, refresh reuse detection, RBAC for all four roles, tenant isolation, ordering under concurrency, rank rebalancing, WebSocket authorization, rate limiting                      |
-| `apps/web/e2e` (Playwright)   | 21    | Sign up → workspace → project → task → comment, filters, palette, permissions, mobile drawer and board, and **two browser contexts proving a card moved by one user appears for another** |
+| `apps/web` (Vitest + RTL)     | 34    | Board cache reducers, realtime sequencing, optimistic move, filter combinations, task card behaviour and accessibility                                                                    |
+| `apps/api` (Jest + Supertest) | 76    | Auth, CSRF, refresh reuse detection, RBAC for all four roles, tenant isolation, ordering under concurrency, rank rebalancing, WebSocket authorization, rate limiting                      |
+| `apps/web/e2e` (Playwright)   | 28    | Sign up → workspace → project → task → comment, filters, palette, permissions, mobile drawer and board, and **two browser contexts proving a card moved by one user appears for another** |
 
 Prisma is never mocked. Tenant isolation, cascade deletes, unique constraints and
 transaction behaviour only exist in the database, so the integration tests run against
@@ -374,4 +354,4 @@ Deliberately out of scope for this build, with the architecture left ready for t
 
 ## License
 
-MIT.
+[MIT](LICENSE).

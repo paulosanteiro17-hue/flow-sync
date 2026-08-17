@@ -6,10 +6,6 @@ const nextConfig: NextConfig = {
   // Produces a self-contained server bundle for the Docker image.
   output: 'standalone',
   outputFileTracingRoot: process.env.NEXT_OUTPUT_TRACING_ROOT ?? undefined,
-  eslint: {
-    // Linting runs once for the whole monorepo from the root config.
-    ignoreDuringBuilds: true,
-  },
   async headers() {
     return [
       {
